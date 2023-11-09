@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
 
 //Forms
 import { FormUserSignUpComponent } from './components/form-user-sign-up/form-user-sign-up.component';
@@ -32,6 +33,7 @@ import { RegistrationComponent } from './routes/registration/registration.compon
     BrowserModule,
     CommonModule,
     AppRoutingModule,
+    HttpClientModule,
     RouterModule.forRoot([
       {path: 'login', component: LoginComponent},
       {path: 'registration', component: RegistrationComponent},

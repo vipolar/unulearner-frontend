@@ -15,7 +15,7 @@ export class RestAPIService {
     };
 
     postUserRegistrationForm(userCredentials: any) {
-        let url = "http://backend.xloodtravel-development.website/users/";
+        let url = "https://backend.xloodtravel-development.website/users/list/register";
         return this.http.post(url, userCredentials, this.httpOptions);
     };
 };
