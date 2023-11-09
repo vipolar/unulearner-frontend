@@ -11,4 +11,4 @@ RUN npm install -g @angular/cli@latest
 
 COPY . /app/unulearner-frontend
 
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "9999", "--disable-host-check", "--proxy-config", "proxy.conf.json"]
+CMD ["ng", "serve"]
