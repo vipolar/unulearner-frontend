@@ -6,6 +6,8 @@ ENV PATH /app/unulearner-frontend/node_modules/.bin:$PATH
 
 COPY package*.json /app/unulearner-frontend/
 
+RUN npm cache clean --force
+
 RUN npm install
 RUN npm install -g @angular/cli@latest
 
