@@ -59,7 +59,7 @@ function initializeKeycloak(keycloak: KeycloakService, keycloakEvents: KeycloakE
     keycloakEvents.initializeKeycloakEventListener();
     return keycloak.init({
       config: {
-        url: 'http://unulearner.com/auth',
+        url: 'https://unulearner.com/auth',
         realm: 'unulearner',
         clientId: 'angular'
       },
