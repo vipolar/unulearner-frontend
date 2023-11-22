@@ -5,7 +5,7 @@ export interface Word {
 
 /* Spring boot pageable response and its components */
 export interface PageableResponse<T> {
-	content?: T[] | null;
+	content: T[] | null;
 	pageable: Pageable;
 	totalPages: number;
 	totalElements: number;
