@@ -1,0 +1,9 @@
+<div *ngFor="let word of wordList">
+	<p *ngIf="word.id">{{ word.id }}. {{ word.word }} <button (click)="deleteWord(word.id)">Delete</button></p>
+</div>
+
+<form>
+	<label>Word:</label>
+	<input type="text" [(ngModel)]="newWord.word" name="word">
+	<button (click)="createWord()">Create Word</button>
+</form>

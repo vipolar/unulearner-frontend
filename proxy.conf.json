@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "https://backend.xloodtravel-development.website",
+      "target": "https://unulearner.com/backend",
       "secure": false
     }
 }
