@@ -3,6 +3,13 @@ export interface Word {
 	word: string;
 }
 
+export interface Dictionary {
+	id: number
+	partOfSpeech: string
+	definition: string
+	context: string
+  }  
+
 /* Spring boot pageable response and its components */
 export interface PageableResponse<T> {
 	content: T[] | null;

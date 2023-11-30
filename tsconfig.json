@@ -21,6 +21,7 @@
     "useDefineForClassFields": false,
     "paths": {
       "@components/*": ["src/app/components/*"],
+      "@material/*": ["src/app/material/*"],
       "@services/*": ["src/app/services/*"],
       "@routes/*": ["src/app/routes/*"],
       "@app/*": ["src/app/*"]

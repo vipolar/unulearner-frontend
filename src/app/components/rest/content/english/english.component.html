@@ -1,0 +1,174 @@
+<style>
+	.container {
+		border: 1px solid black;
+		height: 500px;
+		width: 300px;
+		padding: 0;
+	}
+
+	.wordlist {
+		flex-direction: column;
+		flex-wrap: nowrap;
+		display: flex;
+		height: 100%;
+		padding: 0;
+	}
+
+	.wordlist-header {
+		flex-shrink: 0;
+		width: 100%;
+	}
+
+	.wordlist-main {
+		position: relative;
+		overflow: scroll;
+		flex-grow: 1;
+		padding: 0;
+	}
+
+	.wordlist-footer {
+		position: relative;
+		flex-shrink: 0;
+		height: auto;
+		width: 100%;
+	}
+
+	.wordlist-footer-sort-by {
+		width: 100%;
+		margin: 0;
+	}
+
+	.wordlist-footer-sort-by > div {
+		justify-content: space-evenly;
+		background-color: #F0F0F4;
+		align-items: center;
+		display: flex;
+	}
+
+	.wordlist-footer-sort-paginator.pseudo-hidden {
+		opacity: 0;
+	}
+
+	.wordlist-footer-add-word {
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		left: 0;
+		top: 0;
+	}
+
+	.wordlist-footer-add-word > a {
+		border-radius: 0;
+		height: 100%;
+		width: 100%;
+	}
+
+	.wordlist-footer-button {
+		border-radius: 0;
+		overflow: hidden; /* cuts off "touch area" on the bottome (needs investigating in tasting) */
+		width: 100%;
+	}
+
+	.wordlist-overlay {
+		background-color: #F0F0F4DD;
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		left: 0;
+		top: 0;
+	}
+
+	.dictionary {
+		height: 100%;
+	}
+
+	.dictionary-card {
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+</style>
+
+<form>
+	<label>Word:</label>
+	<input type="text" [(ngModel)]="newWord.word" name="word">
+	<button (click)="createWord()">Create Word</button>
+</form>
+
+<div class="container">
+	<div class="wordlist">
+		<mat-form-field appearance="fill" subscriptSizing="dynamic" class="wordlist-header">
+			<mat-label>Search...</mat-label>
+			<input matInput [readonly]="wordlistCurrentlyQuerying" [(ngModel)]="wordlistSearchStringValue" (ngModelChange)="onWordlistSearchEvent($event)" placeholder="English word">
+			<!--mat-hint>Hint</mat-hint-->
+		</mat-form-field>
+
+		<div class="wordlist-main">
+			<mat-action-list>
+				<button *ngFor="let word of wordlist" mat-list-item>
+					<p *ngIf="word.id" (click)="onWordlistEntryClickEvent(word.id)">{{ word.word }}</p>
+				</button>
+			</mat-action-list>
+			<div class="wordlist-overlay" [ngClass]="{'hidden': !wordlistCurrentlyQuerying}"></div>
+		</div>
+
+		<div class="wordlist-footer">
+			<div class="wordlist-footer-sort-by"
+				[matSortActive]="wordlistSortBy"
+				[matSortDirection]="wordlistSortDirection"
+				[matSortStart]="wordlistSortDirectionDefault"
+				[matSortDisabled]="wordlistCurrentlyQuerying"
+				[ngClass]="{'hidden': !wordlistFooterExpanded}"
+				matSort (matSortChange)="onWordlistSortHeaderEvent($event)">
+				<div class="wordlist-footer-sort-by-container">
+					<div *ngFor="let option of wordlistSortOptions" mat-sort-header="{{option.header}}"><b>{{option.text}}</b></div>
+				</div>
+			</div>
+			<mat-paginator class="wordlist-footer-sort-paginator" [ngClass]="{'pseudo-hidden': wordlistSearchStringValue}"
+				(page)="onWordlistPaginatorEvent($event)"
+				[pageSizeOptions]="wordlistPageSizeOptions"
+				[hidePageSize]="!wordlistFooterExpanded"
+				[disabled]="wordlistCurrentlyQuerying"
+				[showFirstLastButtons]="false"
+				[pageSize]="wordlistPageSize"
+				[length]="wordlistEntries">
+			</mat-paginator>
+			<div class="wordlist-footer-add-word" [ngClass]="{'hidden': !wordlistSearchStringValue}">
+				<a mat-flat-button color="warn" [disabled]="false" [routerLink]="['./create']" [queryParams]="{word: encodeSearchValue(wordlistSearchStringValue)}">Add '{{wordlistSearchStringValue}}' to the wordlist!</a>
+			</div>
+		</div>
+		<button class="wordlist-footer-button" mat-button color="primary" [ngClass]="{'hidden': wordlistSearchStringValue}" (click)="wordlistFooterExpanded = !wordlistFooterExpanded">Show {{wordlistFooterExpanded? 'less' : 'more'}} options</button>
+		<button class="wordlist-footer-button" mat-button color="primary" [ngClass]="{'hidden': !wordlistSearchStringValue}">Make sure the word does not exist!</button>
+	</div>
+
+	<div class="dictionary">
+		<mat-card *ngFor="let card of dictionary" class="dictionary-card">
+			<mat-card-header>
+				<mat-card-title>{{ card.id }}</mat-card-title>
+				<mat-card-subtitle>{{ card.partOfSpeech }}</mat-card-subtitle>
+			</mat-card-header>
+			<mat-card-content>
+				<p matLine>{{ card.definition }}</p>
+				<p matLine>{{ card.context }}</p>
+			</mat-card-content>
+			<mat-card-actions>
+				<button mat-button (click)="buttonOne()">Edit</button>
+				<button mat-button (click)="buttonTwo()">Upvote</button>
+				<button mat-button (click)="buttonThree()">Report</button>
+			</mat-card-actions>
+		</mat-card>
+	</div>
+
+
+
+	<!--p class="wordlist-search">
+		<mat-form-field appearance="fill">
+			<mat-label>Add...</mat-label>
+			<input matInput [formControl]="searchControl" placeholder="English word">
+			<mat-hint>Hint</mat-hint>
+		</mat-form-field>
+	</p-->
+
+	<!--div >
+		<button (click)="deleteWord(word.id)">Delete</button>
+	</div-->
+</div>
