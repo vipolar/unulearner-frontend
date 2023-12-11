@@ -37,7 +37,7 @@ function initializeKeycloak(keycloak: KeycloakService, keycloakEvents: KeycloakE
 const routes: Routes = [
 	{
 		path: 'english',
-		loadChildren: () => import(`@components/rest/content/english/english.module`).then(
+		loadChildren: () => import(`@routes/content/english/english.module`).then(
 			module => module.EnglishModule
 		)
 	},
@@ -45,7 +45,7 @@ const routes: Routes = [
 
 @NgModule({
 	declarations: [
-		AppComponent
+		AppComponent,
 	],
 	imports: [
 		KeycloakAngularModule,

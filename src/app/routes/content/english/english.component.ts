@@ -180,16 +180,4 @@ export class EnglishComponent implements OnInit {
 	
 		
 	*/
-
-	newWord: Word = {
-		id: null,
-		word: ''
-	}
-
-	createWord(): void {
-		this.englishWordlistService.createWord(this.newWord)
-			.subscribe(() => {
-				this.loadWordsMasterlist();
-			});
-	}
 }

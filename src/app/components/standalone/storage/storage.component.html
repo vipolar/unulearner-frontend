@@ -1,0 +1,33 @@
+<storage-tree (onTreeNodeSelect)="onFileSelection($event)"></storage-tree>
+<!--mat-stepper orientation="vertical" linear #stepper>
+	<mat-step [completed]="selectedFile.length > 0">
+		<ng-template matStepLabel>Fill out your name</ng-template>
+		
+		<div>
+			<button mat-button matStepperNext>Next</button>
+		</div>
+	</mat-step>
+	<mat-step [completed]="newFile.length > 0">
+		<ng-template matStepLabel>Fill out your address</ng-template>
+		<storage-add></storage-add>
+		<div>
+			<button mat-button matStepperPrevious>Back</button>
+			<button mat-button matStepperNext [disabled]="isLinear">Next</button>
+		</div>
+	</mat-step>
+	<mat-step [completed]="newFile.length > 0">
+		<ng-template matStepLabel>Fill out your address</ng-template>
+
+		<div>
+			<button mat-button matStepperPrevious>Back</button>
+			<button mat-button matStepperNext [disabled]="isLinear">Next</button>
+		</div>
+	</mat-step>
+	<mat-step>
+		<ng-template matStepLabel>Done</ng-template>
+		<div>
+			<button mat-button matStepperPrevious>Back</button>
+			<button mat-button (click)="stepper.reset()">Reset</button>
+		</div>
+	</mat-step>
+</mat-stepper-->

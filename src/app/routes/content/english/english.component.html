@@ -88,12 +88,6 @@
 	}
 </style>
 
-<form>
-	<label>Word:</label>
-	<input type="text" [(ngModel)]="newWord.word" name="word">
-	<button (click)="createWord()">Create Word</button>
-</form>
-
 <div class="container">
 	<div class="wordlist">
 		<mat-form-field appearance="fill" subscriptSizing="dynamic" class="wordlist-header">
@@ -157,18 +151,4 @@
 			</mat-card-actions>
 		</mat-card>
 	</div>
-
-
-
-	<!--p class="wordlist-search">
-		<mat-form-field appearance="fill">
-			<mat-label>Add...</mat-label>
-			<input matInput [formControl]="searchControl" placeholder="English word">
-			<mat-hint>Hint</mat-hint>
-		</mat-form-field>
-	</p-->
-
-	<!--div >
-		<button (click)="deleteWord(word.id)">Delete</button>
-	</div-->
 </div>

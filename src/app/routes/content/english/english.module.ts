@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule } from '@angular/material/paginator'; 
 import { MatButtonModule } from '@angular/material/button';
@@ -15,11 +14,15 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 
 import { CreateComponent } from './create/create.component';
+import { ImportComponent } from './import/import.component';
 import { UpdateComponent } from './update/update.component';
 import { EnglishComponent } from './english.component';
 
+import { StorageModule } from '@components/standalone/storage/storage.module';
+
 const routes: Routes = [
 	{ path: 'create', component: CreateComponent },
+	{ path: 'import', component: ImportComponent },
 	{ path: 'update', component: UpdateComponent },
 	{ path: '', component: EnglishComponent }
 ];
@@ -28,9 +31,11 @@ const routes: Routes = [
 	declarations: [
 		EnglishComponent,
 		CreateComponent,
+		ImportComponent,
 		UpdateComponent
 	],
 	imports: [
+		StorageModule,
 		FormsModule,
 		CommonModule,
 		MatIconModule,
@@ -43,7 +48,6 @@ const routes: Routes = [
 		MatPaginatorModule,
 		MatFormFieldModule,
 		ReactiveFormsModule,
-		MatProgressBarModule,
 		RouterModule.forChild(routes)
 	],
 	providers: [],

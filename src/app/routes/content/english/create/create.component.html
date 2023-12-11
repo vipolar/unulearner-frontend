@@ -1,0 +1,48 @@
+<style>
+	.container {
+		border: 1px solid black;
+		height: 500px;
+		width: 300px;
+		padding: 0;
+	}
+
+	.file-input {
+		display: none;
+	}
+
+	form>* {
+		width: 100%;
+	}
+</style>
+
+<section class="container">
+	<h1>Reactive Form Example:</h1>
+	<form [formGroup]="newWordForm" (ngSubmit)="onSubmitNewWordForm()">
+
+		<mat-form-field appearance="fill" subscriptSizing="dynamic">
+			<mat-label>New word ID:</mat-label>
+			<input matInput type="number" formControlName="id" [readonly]="true" placeholder="Wordlist ID">
+			<!--mat-hint>Hint</mat-hint-->
+		</mat-form-field>
+
+		<mat-form-field appearance="fill" subscriptSizing="dynamic">
+			<mat-label>New word:</mat-label>
+			<input matInput type="text" formControlName="word" [readonly]="true" placeholder="English word">
+			<!--mat-hint>Hint</mat-hint-->
+		</mat-form-field>
+
+		<mat-form-field appearance="fill" subscriptSizing="dynamic">
+			<mat-label>URL:</mat-label>
+			<input matInput type="url" formControlName="url" [readonly]="false" placeholder="URL of proof">
+			<!--mat-hint>Hint</mat-hint-->
+		</mat-form-field>
+
+		<!--mat-form-field appearance="fill" subscriptSizing="dynamic">
+			<textarea matInput formControlName="basis" [readonly]="false" placeholder="Basis for the addition"></textarea>
+			<mat-hint>Hint</mat-hint>
+		</mat-form-field-->
+
+		<button type="submit" [disabled]="!newWordForm.valid">Submit</button>
+
+	</form>
+</section>
