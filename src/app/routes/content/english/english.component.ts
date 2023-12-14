@@ -13,7 +13,7 @@ import { Word, Dictionary, PageableResponse } from '@app/app.types';
 @Component({
 	selector: 'content-english',
 	templateUrl: './english.component.html',
-	styleUrls: ['./english.component.css']
+	styleUrls: ['./english.component.scss']
 })
 export class EnglishComponent implements OnInit {
 	public wordlistCurrentlyQuerying: boolean = false;

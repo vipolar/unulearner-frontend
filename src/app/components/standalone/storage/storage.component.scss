@@ -1,0 +1,116 @@
+.container {
+    overflow-y: hidden;
+    overflow-x: scroll;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+
+    .storage-tree {
+        height: max-content;
+        width: max-content;
+        min-height: 100%;
+        min-width: 100%;
+
+        .storage-tree-node {
+            background-color: red;
+        }
+
+        .storage-tree-nested-node {
+            background-color: red;
+            div[role=group] {
+                padding-left: 15px;
+            }
+
+            .storage-tree-nested-node-list {
+                list-style-type: none;
+                margin-bottom: 0;
+                margin-top: 0;
+                padding: 0;
+
+                .storage-tree-nested-node-list-directory {
+                    list-style-type: none;
+                    margin-bottom: 0;
+                    margin-top: 0;
+                    padding: 0;
+
+                    display: block;
+                    width: 100%;
+
+                    .storage-tree-nested-node-list-directory-button {
+                        justify-content: flex-start;
+                        align-items: center;
+                        flex-direction: row;
+                        display: flex;
+
+                        padding: 0 10px;
+                        //height: 50px;
+                        width: 100%;
+
+                        &.selected {
+                            background-color: red;
+                        }
+
+
+                        .storage-tree-nested-node-list-directory-button-icon {
+                            font-size: 1.75rem;
+                            height: 1.75rem;
+                            width: 1.75rem;
+                        }
+
+                        .storage-tree-nested-node-list-directory-button-label {
+                            font-size: 1.5rem;
+                            height: 1.5rem;
+                            width: 1.5rem;
+                        }
+                    }
+                }
+
+                .storage-tree-nested-node-list-file {
+                    color: red;
+                }
+            }
+        }
+    }
+
+    .storage-options {
+        transition: all 2s linear; //TODO
+        align-items:  flex-start;
+        justify-content: center;
+        flex-direction: column;
+        display: flex;
+        width: 100%;
+
+        position: absolute;
+        bottom: unset;
+        top: 100%;
+        left: 0;
+
+        &.expanded {
+            transition: all 2s linear; //TODO
+            top: unset;
+            bottom: 0;
+        }
+
+        .storage-options-button {
+            justify-content:  flex-start;
+            flex-direction: row;
+            display: flex;
+            width: 100%;
+
+            .storage-options-button-icon {
+                font-size: 1.75rem;
+                height: 1.75rem;
+                width: 1.75rem;
+            }
+
+            .storage-options-button-label {
+                font-size: 1.5rem;
+                height: 1.5rem;
+                width: 1.5rem;
+            }
+        }
+    }
+
+    
+}

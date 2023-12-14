@@ -1,12 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StorageNode } from '@app/app.types';
 
 import { MatButtonModule } from '@angular/material/button';
 
+import { StorageService } from '@services/rest/storage/storage.service';
+import { StorageNode } from '@app/app.types';
+
 import {
-	//MatDialog,
-	//MatDialogRef,
+	MatDialogRef,
 	MatDialogClose,
 	MatDialogTitle,
 	MatDialogContent,
@@ -16,20 +17,20 @@ import {
 } from '@angular/material/dialog';
 
 @Component({
-	selector: 'storage-remove',
-	templateUrl: './remove.component.html',
-	styleUrls: ['./remove.component.scss'],
+	selector: 'storage-create',
+	templateUrl: './create.component.html',
+	styleUrls: ['./create.component.scss'],
 	imports: [
 		CommonModule,
 		MatDialogModule,
-		MatButtonModule
+		MatButtonModule,
 	],
 	standalone: true
 })
-
-export class RemoveComponent {
+export class CreateComponent {
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: StorageNode,
-		//public dialogRef: MatDialogRef<RemoveComponent>
+		public dialogRef: MatDialogRef<CreateComponent>,
+		private storageService: StorageService
 	) { }
 }
