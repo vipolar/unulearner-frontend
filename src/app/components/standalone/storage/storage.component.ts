@@ -4,8 +4,6 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatDialog } from '@angular/material/dialog';
 
-import { InfoComponent } from './info/info.component';
-
 import { StorageService } from '@services/rest/storage/storage.service';
 import { StorageNode } from '@app/app.types';
 
@@ -16,14 +14,14 @@ import { CreateCancelledComponent } from './create/create-cancelled/create-cance
 import { CreateResponseComponent } from './create/create-response/create-response.component';
 import { CreateErrorComponent } from './create/create-error/create-error.component';
 
-
+import { DetailsComponent } from './details/details.component';
 import { DownloadComponent } from './download/download.component';
 import { RemoveComponent } from './remove/remove.component';
 
 export enum DialogMode {
 	USE,
-	INFO,
 	CREATE,
+	DETAILS,
 	DOWNLOAD,
 	REMOVE
 }
@@ -50,12 +48,30 @@ export class StorageComponent implements OnInit {
 		private dialog: MatDialog
 	) { }
 
-	public onTreeNodeClick(node: StorageNode): void {
-		if (!this.selectedNode) {
-			this.selectedNode = node;
+	public onTreeNodeClick(node: StorageNode, event: any): void {
+		if (this.selectedNode) {
+			if (this.selectedNode.id != node.id) {
+				this.selectedNode = node;
+
+				if (!this.treeControl.isExpanded(node)) {
+					this.treeControl.expand(node);
+				}
+			} else {
+				this.selectedNode = null;
+
+				if (this.treeControl.isExpanded(node)) {
+					this.treeControl.collapseDescendants(node);
+				}
+			}
 		} else {
-			this.selectedNode = null;
+			this.selectedNode = node;
+
+			if (!this.treeControl.isExpanded(node)) {
+				this.treeControl.expand(node);
+			}
 		}
+		
+		(event.target as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
 	}
 
 	public openDialog(mode: DialogMode, node: StorageNode | null): void {
@@ -65,15 +81,9 @@ export class StorageComponent implements OnInit {
 		if (!node || node.id != this.selectedNode?.id) {
 			return;
 		}
-
 		switch (mode) {
 			case this.dialogMode.USE:
 				dialogComponent = null; // THIS WILL BE IMPORTED?
-				break;
-			case this.dialogMode.INFO:
-				dialogComponent = {
-					'initial': InfoComponent
-				};
 				break;
 			case this.dialogMode.CREATE:
 				dialogComponent = {
@@ -83,6 +93,12 @@ export class StorageComponent implements OnInit {
 					'cancelled': CreateCancelledComponent,
 					'response': CreateResponseComponent,
 					'error': CreateErrorComponent
+				};
+				break;
+			case this.dialogMode.DETAILS:
+				dialogComponent = {
+					'initial': DetailsComponent,
+					//'editNode': DetailsEditComponent
 				};
 				break;
 			case this.dialogMode.DOWNLOAD:

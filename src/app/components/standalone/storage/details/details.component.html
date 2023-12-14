@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>{{data.isDirectory ? 'Directory' : 'File'}} details:</h1>
+<div mat-dialog-content>
+	<b>Name: {{data.name}}</b><br>
+    <b>OnDisk: {{data.url}}</b><br>
+    <b>Children: {{data.childNodes.length}}</b><br>
+	<b>Created on: {{data.created}}</b><br>
+    <b>Last updated on: {{data.updated}}</b><br>
+	<b>Description: {{data.description}}</b><br>
+</div>
+<div mat-dialog-actions>
+    <button type="button" mat-button [mat-dialog-close]="'editNode'">Edit</button>
+	<button type="button" mat-button [mat-dialog-close]="true" cdkFocusInitial>Ok</button>
+</div>

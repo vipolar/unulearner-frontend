@@ -2,7 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
-
 import { StorageNode } from '@app/app.types';
 
 import {
@@ -16,9 +15,9 @@ import {
 } from '@angular/material/dialog';
 
 @Component({
-	selector: 'storage-create',
-	templateUrl: './create.component.html',
-	styleUrls: ['./create.component.scss'],
+	selector: 'storage-details',
+	templateUrl: './details.component.html',
+	styleUrls: ['./details.component.scss'],
 	imports: [
 		CommonModule,
 		MatDialogModule,
@@ -26,9 +25,9 @@ import {
 	],
 	standalone: true
 })
-export class CreateComponent {
+export class DetailsComponent {
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: StorageNode,
-		public dialogRef: MatDialogRef<CreateComponent>,
+		public dialogRef: MatDialogRef<DetailsComponent>
 	) { }
 }
