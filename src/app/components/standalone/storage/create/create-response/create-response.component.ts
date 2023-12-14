@@ -9,23 +9,23 @@ import {
 	MatDialogTitle,
 	MatDialogContent,
 	MatDialogActions,
-  	MatDialogModule,
+	MatDialogModule,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 
 @Component({
-  selector: 'storage-create-response',
-  templateUrl: './create-response.component.html',
-  styleUrls: ['./create-response.component.scss'],
-  imports: [
+	selector: 'storage-create-response',
+	templateUrl: './create-response.component.html',
+	styleUrls: ['./create-response.component.scss'],
+	imports: [
 		CommonModule,
 		MatDialogModule,
 		MatButtonModule,
 	],
-  standalone: true
+	standalone: true
 })
 export class CreateResponseComponent {
-  constructor(
+	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<CreateResponseComponent>
 	) { }

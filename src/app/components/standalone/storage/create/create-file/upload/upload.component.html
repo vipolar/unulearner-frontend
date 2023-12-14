@@ -1,11 +1,11 @@
 <mat-form-field appearance="fill" subscriptSizing="dynamic">
-    <mat-label>File:</mat-label>
-    <input type="file" class="file-input" formControlName="content" [ngStyle]="{ 'display': 'none' }" #fileInput>
-    <input matInput type="text" [value]="file?.name" placeholder="No file selected..." required [readonly]="true">
-    <div matSuffix class="file-upload">
-        <button type="button" mat-icon-button color="primary" class="upload-btn"
-            (click)="fileInput.click()" aria-label="Select a file for upload">
-            <mat-icon>{{'attach_file'}}</mat-icon>
-        </button>
-    </div>
+	<mat-label>File:</mat-label>
+	<input type="file" class="file-input" formControlName="content" [ngStyle]="{ 'display': 'none' }" #fileInput>
+	<input matInput type="text" [value]="file?.name" placeholder="No file selected..." required [readonly]="true">
+	<div matSuffix class="file-upload">
+		<button type="button" mat-icon-button color="primary" class="upload-btn" (click)="fileInput.click()"
+			aria-label="Select a file for upload">
+			<mat-icon>{{'attach_file'}}</mat-icon>
+		</button>
+	</div>
 </mat-form-field>

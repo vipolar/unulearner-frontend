@@ -9,23 +9,23 @@ import {
 	MatDialogTitle,
 	MatDialogContent,
 	MatDialogActions,
-  MatDialogModule,
+	MatDialogModule,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 
 @Component({
-  selector: 'storage-create-error',
-  templateUrl: './create-error.component.html',
-  styleUrls: ['./create-error.component.scss'],
-  imports: [
+	selector: 'storage-create-error',
+	templateUrl: './create-error.component.html',
+	styleUrls: ['./create-error.component.scss'],
+	imports: [
 		CommonModule,
 		MatDialogModule,
 		MatButtonModule,
 	],
-  standalone: true
+	standalone: true
 })
 export class CreateErrorComponent {
-  constructor(
+	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<CreateErrorComponent>
 	) { }

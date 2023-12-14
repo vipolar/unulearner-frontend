@@ -1,25 +1,30 @@
 <h1 mat-dialog-title>Upload file</h1>
 <div mat-dialog-content>
-    <form id="fileForm" enctype="multipart/form-data" [formGroup]="newFileForm" (ngSubmit)="addFile()">
-        <storage-create-file-upload formControlName="content"></storage-create-file-upload>
-        <mat-form-field appearance="fill" subscriptSizing="dynamic">
-            <mat-label>Parent directory:</mat-label>
-            <input matInput type="text" [value]="data.name" required placeholder="Name of the parent directory" [readonly]="true">
-            <!--mat-hint>Hint</mat-hint-->
-        </mat-form-field>
-        <mat-form-field appearance="fill" subscriptSizing="dynamic">
-            <mat-label>Description:</mat-label>
-            <input matInput type="text" formControlName="description" required placeholder="A short description of the new directory and its purpose...">
-            <!--mat-hint>Hint</mat-hint-->
-        </mat-form-field>
-    
-        <div class="progress" *ngIf="fileUploadProgress">
-            <mat-progress-bar class="progress-bar" mode="determinate" [value]="fileUploadProgress"></mat-progress-bar>
-        </div>
-    </form>
+	<form id="fileForm" enctype="multipart/form-data" [formGroup]="newFileForm" (ngSubmit)="addFile()">
+		<storage-create-file-upload formControlName="content"></storage-create-file-upload>
+		<mat-form-field appearance="fill" subscriptSizing="dynamic">
+			<mat-label>Parent directory:</mat-label>
+			<input matInput type="text" [value]="data.name" required placeholder="Name of the parent directory"
+				[readonly]="true">
+			<!--mat-hint>Hint</mat-hint-->
+		</mat-form-field>
+		<mat-form-field appearance="fill" subscriptSizing="dynamic">
+			<mat-label>Description:</mat-label>
+			<input matInput type="text" formControlName="description" required
+				placeholder="A short description of the new directory and its purpose...">
+			<!--mat-hint>Hint</mat-hint-->
+		</mat-form-field>
+
+		<div class="progress" *ngIf="fileUploadProgress">
+			<mat-progress-bar class="progress-bar" mode="determinate" [value]="fileUploadProgress"></mat-progress-bar>
+		</div>
+	</form>
 </div>
 <div mat-dialog-actions>
-    <button type="submit" mat-button *ngIf="!formSubmissionSubscription" [disabled]="!newFileForm.valid" form="fileForm">Submit</button>
-    <button type="button" mat-button *ngIf="formSubmissionSubscription" [disabled]="!formSubmissionSubscriptionCancellable" (click)="cancelSubscription()">Cancel</button>
-    <button type="button" mat-button [mat-dialog-close]="false" [disabled]="formSubmissionSubscription" cdkFocusInitial>Go back</button>
+	<button type="submit" mat-button *ngIf="!formSubmissionSubscription" [disabled]="!newFileForm.valid"
+		form="fileForm">Submit</button>
+	<button type="button" mat-button *ngIf="formSubmissionSubscription"
+		[disabled]="!formSubmissionSubscriptionCancellable" (click)="cancelSubscription()">Cancel</button>
+	<button type="button" mat-button [mat-dialog-close]="false" [disabled]="formSubmissionSubscription"
+		cdkFocusInitial>Go back</button>
 </div>

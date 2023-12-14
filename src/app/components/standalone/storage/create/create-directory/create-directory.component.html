@@ -1,25 +1,30 @@
 <h1 mat-dialog-title>Add to storage</h1>
 <div mat-dialog-content>
-    <form id="directoryForm" enctype="multipart/form-data" [formGroup]="newDirectoryForm" (ngSubmit)="addDirectory()">
-        <mat-form-field appearance="fill" subscriptSizing="dynamic">
-            <mat-label>Directory:</mat-label>
-            <input matInput type="text" formControlName="directory" placeholder="Name of the new directory">
-            <!--mat-hint>Hint</mat-hint-->
-        </mat-form-field>
-        <mat-form-field appearance="fill" subscriptSizing="dynamic">
-            <mat-label>Parent directory:</mat-label>
-            <input matInput type="text" [value]="data.name" placeholder="Name of the parent directory" [readonly]="true">
-            <!--mat-hint>Hint</mat-hint-->
-        </mat-form-field>
-        <mat-form-field appearance="fill" subscriptSizing="dynamic">
-            <mat-label>Description:</mat-label>
-            <input matInput type="text" formControlName="description" placeholder="A short description of the new directory and its purpose...">
-            <!--mat-hint>Hint</mat-hint-->
-        </mat-form-field>
-    </form>
+	<form id="directoryForm" enctype="multipart/form-data" [formGroup]="newDirectoryForm" (ngSubmit)="addDirectory()">
+		<mat-form-field appearance="fill" subscriptSizing="dynamic">
+			<mat-label>Directory:</mat-label>
+			<input matInput type="text" formControlName="directory" placeholder="Name of the new directory">
+			<!--mat-hint>Hint</mat-hint-->
+		</mat-form-field>
+		<mat-form-field appearance="fill" subscriptSizing="dynamic">
+			<mat-label>Parent directory:</mat-label>
+			<input matInput type="text" [value]="data.name" placeholder="Name of the parent directory"
+				[readonly]="true">
+			<!--mat-hint>Hint</mat-hint-->
+		</mat-form-field>
+		<mat-form-field appearance="fill" subscriptSizing="dynamic">
+			<mat-label>Description:</mat-label>
+			<input matInput type="text" formControlName="description"
+				placeholder="A short description of the new directory and its purpose...">
+			<!--mat-hint>Hint</mat-hint-->
+		</mat-form-field>
+	</form>
 </div>
 <div mat-dialog-actions>
-    <button type="submit" mat-button *ngIf="!formSubmissionSubscription" [disabled]="!newDirectoryForm.valid" form="directoryForm">Create directory</button>
-    <button type="button" mat-button *ngIf="formSubmissionSubscription" [disabled]="!formSubmissionSubscriptionCancellable" (click)="cancelSubscription()">Cancel</button>
-    <button type="button" mat-button [mat-dialog-close]="false" [disabled]="formSubmissionSubscription" cdkFocusInitial>Go back</button>
+	<button type="submit" mat-button *ngIf="!formSubmissionSubscription" [disabled]="!newDirectoryForm.valid"
+		form="directoryForm">Create directory</button>
+	<button type="button" mat-button *ngIf="formSubmissionSubscription"
+		[disabled]="!formSubmissionSubscriptionCancellable" (click)="cancelSubscription()">Cancel</button>
+	<button type="button" mat-button [mat-dialog-close]="false" [disabled]="formSubmissionSubscription"
+		cdkFocusInitial>Go back</button>
 </div>

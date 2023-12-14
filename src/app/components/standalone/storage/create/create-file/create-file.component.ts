@@ -35,8 +35,8 @@ interface NewFileFormTypes {
 
 @Component({
 	selector: 'storage-create-file',
-  templateUrl: './create-file.component.html',
-  styleUrls: ['./create-file.component.scss'],
+	templateUrl: './create-file.component.html',
+	styleUrls: ['./create-file.component.scss'],
 	imports: [
 		FormsModule,
 		CommonModule,
@@ -53,7 +53,7 @@ interface NewFileFormTypes {
 })
 export class CreateFileComponent {
 	@Output() responseEmitter: EventEmitter<any> = new EventEmitter();
-	
+
 	public formSubmissionSubscriptionCancellable: boolean = false;
 	public formSubmissionSubscription: any = undefined;
 	public formSubmissionResponse: any = undefined;
@@ -78,7 +78,7 @@ export class CreateFileComponent {
 
 		Object.entries(formValues).forEach(([key, value]) => {
 			const typedValue = value as NewFileFormTypes[keyof NewFileFormTypes];
-		
+
 			if (typedValue !== undefined && typedValue !== null) {
 				if (typedValue instanceof File) {
 					formData.append(key, typedValue, typedValue.name);
@@ -99,7 +99,7 @@ export class CreateFileComponent {
 					}
 				}),
 				filter(event => event instanceof HttpResponse), //filter(event => event.type === HttpEventType.Response),
-    			map((event: any) => event.body), //map(event => event as HttpResponse<any>),
+				map((event: any) => event.body), //map(event => event as HttpResponse<any>),
 				catchError(error => {
 					throw error;
 				})

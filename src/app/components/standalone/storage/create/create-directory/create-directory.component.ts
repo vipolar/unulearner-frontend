@@ -32,7 +32,7 @@ interface NewDirectoryFormTypes {
 @Component({
 	selector: 'storage-create-directory',
 	templateUrl: './create-directory.component.html',
-  	styleUrls: ['./create-directory.component.scss'],
+	styleUrls: ['./create-directory.component.scss'],
 	imports: [
 		FormsModule,
 		CommonModule,
@@ -48,7 +48,7 @@ interface NewDirectoryFormTypes {
 })
 export class CreateDirectoryComponent {
 	@Output() responseEmitter: EventEmitter<any> = new EventEmitter();
-	
+
 	public formSubmissionSubscriptionCancellable: boolean = false;
 	public formSubmissionSubscription: any = undefined;
 	public formSubmissionResponse: any = undefined;

@@ -7,7 +7,9 @@
 		<mat-nested-tree-node class="storage-tree-nested-node" *matTreeNodeDef="let node; when: hasChild">
 			<ul class="storage-tree-nested-node-list">
 				<li class="storage-tree-nested-node-list-directory" *ngIf="node.isDirectory">
-					<button class="storage-tree-nested-node-list-directory-button" [ngClass]="{'selected': selectedNode?.id == node.id}" mat-button matTreeNodeToggle color="warn" [attr.aria-label]="'Toggle ' + node.name" (click)="onTreeNodeClick(node)">
+					<button class="storage-tree-nested-node-list-directory-button"
+						[ngClass]="{'selected': selectedNode?.id == node.id}" mat-button matTreeNodeToggle color="warn"
+						[attr.aria-label]="'Toggle ' + node.name" (click)="onTreeNodeClick(node)">
 						<mat-icon class="storage-tree-nested-node-list-directory-button-icon">
 							{{treeControl.isExpanded(node) ? 'folder_open' : 'folder'}}
 						</mat-icon>
@@ -15,7 +17,8 @@
 					</button>
 				</li>
 				<li class="storage-tree-nested-node-list-file" *ngIf="!node.isDirectory">
-					<button mat-button color="warn" [attr.aria-label]="'Select ' + node.name" (click)="onTreeNodeClick(node)">
+					<button mat-button color="warn" [attr.aria-label]="'Select ' + node.name"
+						(click)="onTreeNodeClick(node)">
 						<mat-icon class="mat-icon">
 							{{'text_snippet'}}
 						</mat-icon>
@@ -24,29 +27,35 @@
 				</li>
 			</ul>
 			<!-- directories -->
-			<div class="storage-tree-nested-node-children" [ngClass]="{'hidden': !treeControl.isExpanded(node)}" role="group">
+			<div class="storage-tree-nested-node-children" [ngClass]="{'hidden': !treeControl.isExpanded(node)}"
+				role="group">
 				<ng-container matTreeNodeOutlet></ng-container>
 			</div>
 		</mat-nested-tree-node>
 	</mat-tree>
 	<div class="storage-options" [ngClass]="{'expanded' : selectedNode}">
-		<button class="storage-options-button" mat-button aria-label="Example icon" (click)="openDialog(dialogMode.USE, selectedNode)" *ngIf="!selectedNode?.isDirectory">
+		<button class="storage-options-button" mat-button aria-label="Example icon"
+			(click)="openDialog(dialogMode.USE, selectedNode)" *ngIf="!selectedNode?.isDirectory">
 			<mat-icon class="storage-options-button-icon">{{'add_circle_outline'}}</mat-icon>
 			<span class="storage-options-button-label">Use</span>
 		</button>
-		<button class="storage-options-button" mat-button aria-label="Example icon" (click)="openDialog(dialogMode.INFO, selectedNode)">
+		<button class="storage-options-button" mat-button aria-label="Example icon"
+			(click)="openDialog(dialogMode.INFO, selectedNode)">
 			<mat-icon class="storage-options-button-icon">{{'info_outline'}}</mat-icon>
 			<span class="storage-options-button-label">Info</span>
 		</button>
-		<button class="storage-options-button" mat-button aria-label="Example icon" (click)="openDialog(dialogMode.CREATE, selectedNode)" *ngIf="selectedNode?.isDirectory">
+		<button class="storage-options-button" mat-button aria-label="Example icon"
+			(click)="openDialog(dialogMode.CREATE, selectedNode)" *ngIf="selectedNode?.isDirectory">
 			<mat-icon class="storage-options-button-icon">{{'add_circle_outline'}}</mat-icon>
 			<span class="storage-options-button-label">Create</span>
 		</button>
-		<button class="storage-options-button" mat-button aria-label="Example icon" (click)="openDialog(dialogMode.DOWNLOAD, selectedNode)">
+		<button class="storage-options-button" mat-button aria-label="Example icon"
+			(click)="openDialog(dialogMode.DOWNLOAD, selectedNode)">
 			<mat-icon class="storage-options-button-icon">{{'arrow_circle_down'}}</mat-icon>
 			<span class="storage-options-button-label">Download</span>
 		</button>
-		<button class="storage-options-button" mat-button aria-label="Example icon" (click)="openDialog(dialogMode.REMOVE, selectedNode)">
+		<button class="storage-options-button" mat-button aria-label="Example icon"
+			(click)="openDialog(dialogMode.REMOVE, selectedNode)">
 			<mat-icon class="storage-options-button-icon">{{'highlight_remove'}}</mat-icon>
 			<span class="storage-options-button-label">Remove</span>
 		</button>

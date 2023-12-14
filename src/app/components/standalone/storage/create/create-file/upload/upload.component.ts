@@ -6,49 +6,49 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'storage-create-file-upload',
-  templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.scss'],
-  standalone: true,
-  imports: [
+	selector: 'storage-create-file-upload',
+	templateUrl: './upload.component.html',
+	styleUrls: ['./upload.component.scss'],
+	standalone: true,
+	imports: [
 		CommonModule,
 		MatInputModule,
-    MatButtonModule,
+		MatButtonModule,
 		MatIconModule
 	],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: UploadComponent,
-      multi: true
-    }
-  ]
+	providers: [
+		{
+			provide: NG_VALUE_ACCESSOR,
+			useExisting: UploadComponent,
+			multi: true
+		}
+	]
 })
 export class UploadComponent implements ControlValueAccessor {
-  @Input() progress: any;
+	@Input() progress: any;
 
-  onChange!: Function;
-  public file: File | null = null;
+	onChange!: Function;
+	public file: File | null = null;
 
-  @HostListener('change', ['$event.target.files']) emitFiles( event: FileList ) {
-    const file = event && event.item(0);
-    this.onChange(file);
-    this.file = file;
-  }
+	@HostListener('change', ['$event.target.files']) emitFiles(event: FileList) {
+		const file = event && event.item(0);
+		this.onChange(file);
+		this.file = file;
+	}
 
-  constructor( private host: ElementRef<HTMLInputElement> ) {
-  }
+	constructor(private host: ElementRef<HTMLInputElement>) {
+	}
 
-  writeValue( value: null ) {
-    // clear file input
-    this.host.nativeElement.value = '';
-    this.file = null;
-  }
+	writeValue(value: null) {
+		// clear file input
+		this.host.nativeElement.value = '';
+		this.file = null;
+	}
 
-  registerOnChange( fn: Function ) {
-    this.onChange = fn;
-  }
+	registerOnChange(fn: Function) {
+		this.onChange = fn;
+	}
 
-  registerOnTouched( fn: Function ) {
-  }
+	registerOnTouched(fn: Function) {
+	}
 }
