@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 // Angular material modules
 //import { MatProgressBarModule } from '@angular/material/progress-bar';
 //import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 // The storage tree and its CRUD
 import { StorageComponent } from './storage.component';
 
-//import { ResponseComponent } from './create/file/response/response.component';
+
 
 @NgModule({
 	declarations: [
@@ -22,6 +24,7 @@ import { StorageComponent } from './storage.component';
 	],
 	imports: [
 		CommonModule,
+		DragDropModule,
 		//MatProgressBarModule,
 		//MatFormFieldModule,
 		//MatStepperModule,

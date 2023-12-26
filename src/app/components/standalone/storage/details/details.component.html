@@ -1,13 +1,14 @@
-<h1 mat-dialog-title>{{data.isDirectory ? 'Directory' : 'File'}} details:</h1>
+<h1 mat-dialog-title>{{targetNode.isDirectory ? 'Directory' : 'File'}} details:</h1>
 <div mat-dialog-content>
-	<b>Name: {{data.name}}</b><br>
-    <b>OnDisk: {{data.url}}</b><br>
-    <b>Children: {{data.childNodes.length}}</b><br>
-	<b>Created on: {{data.created}}</b><br>
-    <b>Last updated on: {{data.updated}}</b><br>
-	<b>Description: {{data.description}}</b><br>
+	<b>Name: {{targetNode.name}}</b><br>
+    <b>OnDisk: {{targetNode.url}}</b><br>
+    <b>Children: {{targetNode.isDirectory ? targetNode.childNodes.length : 'N/A'}}</b><br>
+	<b>Created on: {{targetNode.created}}</b><br>
+    <b>Last updated on: {{targetNode.updated}}</b><br>
+	<b>Description: {{targetNode.description}}</b><br>
 </div>
 <div mat-dialog-actions>
-    <button type="button" mat-button [mat-dialog-close]="'editNode'">Edit</button>
+    <button type="button" mat-button [disabled]="targetNode.isDirectory" (click)="initiateDownload()">Download</button>
+    <button type="button" mat-button [disabled]="targetNode.url.length == 0" [mat-dialog-close]="'editNode'">Edit {{targetNode.isDirectory ? 'directory' : 'file'}}</button>
 	<button type="button" mat-button [mat-dialog-close]="true" cdkFocusInitial>Ok</button>
 </div>

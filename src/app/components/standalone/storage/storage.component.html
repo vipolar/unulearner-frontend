@@ -1,11 +1,10 @@
 <div class="container">
 	<section class="storage">
-		<mat-tree class="storage-tree" [dataSource]="dataSource" [treeControl]="treeControl">
-			<!-- This is the tree node template for non-expandable nodes -->
-			<mat-tree-node class="storage-tree-node" *matTreeNodeDef="let node">
-				<button class="storage-tree-node-button" mat-button (click)="onTreeNodeClick(node, $event)"
-					[ngClass]="{'selected': selectedNode?.id == node.id}" color="warn"
-					[attr.aria-label]="'Select ' + node.name">
+		<mat-tree id="storage-tree" class="storage-tree" [dataSource]="dataSource" [treeControl]="treeControl">
+			<!-- This is the tree node template for non-expandable nodes | cdkDragPreview cdkDragHandle cdkDragBoundary="#storage-tree"-->
+			<mat-tree-node class="storage-tree-node" *matTreeNodeDef="let node" cdkDrag (cdkDragStarted)="onNodeDrag($event, node)" (nodeDropped)="onNodeDrop($event, node)">
+				<button class="storage-tree-node-button" mat-button (click)="onTreeNodeClick(node, $event)" [ngClass]="{'selected': selectedNode?.id == node.id}"
+					color="warn" [attr.aria-label]="'Select ' + node.name">
 					<mat-icon class="storage-tree-node-button-icon">
 						{{'check'}}
 					</mat-icon>
@@ -13,10 +12,9 @@
 				</button>
 			</mat-tree-node>
 			<!-- This is the tree node template for expandable nodes -->
-			<mat-nested-tree-node class="storage-tree-nested-node" *matTreeNodeDef="let node; when: hasChild">
-				<button class="storage-tree-nested-node-button" mat-button (click)="onTreeNodeClick(node, $event)"
-					[ngClass]="{'selected': selectedNode?.id == node.id}" color="warn"
-					[attr.aria-label]="'Toggle ' + node.name">
+			<mat-nested-tree-node class="storage-tree-nested-node" *matTreeNodeDef="let node; when: hasChild" cdkDrag (cdkDragStarted)="onNodeDrag($event, node)" (nodeDropped)="onNodeDrop($event, node)">
+				<button class="storage-tree-nested-node-button" mat-button (click)="onTreeNodeClick(node, $event)" [ngClass]="{'selected': selectedNode?.id == node.id}"
+					color="warn" [attr.aria-label]="'Toggle ' + node.name">
 					<mat-icon class="storage-tree-nested-node-button-icon">
 						{{treeControl.isExpanded(node) ? 'folder_open' : 'folder'}}
 					</mat-icon>
@@ -33,27 +31,22 @@
 
 	<aside class="options" [ngClass]="{'expanded' : selectedNode}" role="menu">
 		<button class="options-button" mat-button aria-label="Example icon"
-			(click)="openDialog(dialogMode.USE, selectedNode)">
+			(click)="openDialog(dialogMode.USE, selectedNode, null , null)">
 			<mat-icon class="options-button-icon">{{'arrow_circle_up'}}</mat-icon>
 			<span class="options-button-label">Use</span>
 		</button>
-		<button class="options-button" mat-button aria-label="Example icon"
-			(click)="openDialog(dialogMode.CREATE, selectedNode)">
+		<button class="options-button" mat-button aria-label="Example icon" [disabled]="!selectedNode?.isDirectory"
+			(click)="openDialog(dialogMode.CREATE, null, selectedNode, null)">
 			<mat-icon class="options-button-icon">{{'add_circle_outline'}}</mat-icon>
 			<span class="options-button-label">Create</span>
 		</button>
 		<button class="options-button" mat-button aria-label="Example icon"
-			(click)="openDialog(dialogMode.DETAILS, selectedNode)">
+			(click)="openDialog(dialogMode.DETAILS, selectedNode, null , null)">
 			<mat-icon class="options-button-icon">{{'info_outline'}}</mat-icon>
 			<span class="options-button-label">Details</span>
 		</button>
 		<button class="options-button" mat-button aria-label="Example icon"
-			(click)="openDialog(dialogMode.DOWNLOAD, selectedNode)">
-			<mat-icon class="options-button-icon">{{'arrow_circle_down'}}</mat-icon>
-			<span class="options-button-label">Download</span>
-		</button>
-		<button class="options-button" mat-button aria-label="Example icon"
-			(click)="openDialog(dialogMode.REMOVE, selectedNode)">
+			(click)="openDialog(dialogMode.REMOVE, selectedNode, null , null)">
 			<mat-icon class="options-button-icon">{{'highlight_remove'}}</mat-icon>
 			<span class="options-button-label">Remove</span>
 		</button>

@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NestedTreeControl } from '@angular/cdk/tree';
+import { CdkDragStart } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 
 import { StorageService } from '@services/rest/storage/storage.service';
@@ -15,14 +16,17 @@ import { CreateResponseComponent } from './create/create-response/create-respons
 import { CreateErrorComponent } from './create/create-error/create-error.component';
 
 import { DetailsComponent } from './details/details.component';
-import { DownloadComponent } from './download/download.component';
+import { DetailsEditComponent } from './details/details-edit/details-edit.component';
+import { DetailsResponseComponent } from './details/details-response/details-response.component';
+import { DetailsErrorComponent } from './details/details-error/details-error.component';
+
 import { RemoveComponent } from './remove/remove.component';
 
 export enum DialogMode {
 	USE,
 	CREATE,
 	DETAILS,
-	DOWNLOAD,
+	TRANSFER,
 	REMOVE
 }
 
@@ -42,6 +46,7 @@ export class StorageComponent implements OnInit {
 	public dialogMode = DialogMode;
 
 	@Output() onTreeNodeSelect = new EventEmitter<any>();
+	@Output() nodeDropped = new EventEmitter<any>();
 
 	constructor(
 		private storageService: StorageService,
@@ -70,17 +75,93 @@ export class StorageComponent implements OnInit {
 				this.treeControl.expand(node);
 			}
 		}
-		
+
 		(event.target as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
 	}
 
-	public openDialog(mode: DialogMode, node: StorageNode | null): void {
+	public onNodeDrag(event: CdkDragStart, node: StorageNode): void {
+		const target = event.source.element.nativeElement;
+		const parent = event.source.element.nativeElement.parentElement;
+		const clone = event.source.element.nativeElement.cloneNode(true) as HTMLElement;
+
+		parent!.insertBefore(clone, target.nextSibling);
+		target.style.pointerEvents = 'none';
+		target.style.position = 'fixed';
+		target.style.zIndex = '1000';
+
+		// Set the position of the clone to match the original node
+		const rect = event.source.element.nativeElement.getBoundingClientRect();
+		target.style.width = `${rect.width}px`;
+		target.style.left = `${rect.left}px`;
+		target.style.top = `${rect.top}px`;
+
+		// Update the position of the clone during dragging
+		const dragMoveSubscription = event.source._dragRef.moved.subscribe((dragMoveEvent) => {
+			const movedRect = dragMoveEvent.pointerPosition!;
+			target.style.transform = clone.style.transform;
+			target.style.left = `${movedRect.x}px`;
+			target.style.top = `${movedRect.y}px`;
+		});
+
+		const dragEndSubscription = event.source._dragRef.ended.subscribe((dragMoveEvent) => {
+			// Get the coordinates of the drop position
+			const dropX = dragMoveEvent.dropPoint.x || 0;
+			const dropY = dragMoveEvent.dropPoint.y || 0;
+
+			// Find the drop target element at the coordinates
+			const dropTargetElement = document.elementFromPoint(dropX, dropY);
+
+			if (dropTargetElement?.closest('.mat-nested-tree-node')) {
+				const nodeDroppedEvent = new CustomEvent('nodeDropped', {
+					bubbles: true, // Allow the event to bubble up the DOM hierarchy
+					detail: { data : node }, // You can attach additional data
+				});
+			  
+				dropTargetElement?.dispatchEvent(nodeDroppedEvent);
+			}
+
+			// Cleanup on drag end
+			target.style.pointerEvents = clone.style.pointerEvents;
+			target.style.transform = clone.style.transform;
+			target.style.position = clone.style.position;
+			target.style.display = clone.style.display;
+			target.style.zIndex = clone.style.zIndex;
+			target.style.width = clone.style.width;
+			target.style.left = clone.style.left;
+			target.style.top = clone.style.top;
+
+			// Remove the clone from the document body
+			parent!.removeChild(clone);
+
+			// Unsubscribe to avoid memory leaks
+			dragMoveSubscription.unsubscribe();
+			dragEndSubscription.unsubscribe();
+		});
+	}
+
+	public onNodeDrop(event: any, parentNode: StorageNode): void {
+		event.stopPropagation(); // Only the first hit is needed
+		const targetNode : StorageNode = event.detail.data;
+
+		if (targetNode == null || parentNode == null) {
+			return;
+		}
+
+		if (!parentNode.isDirectory) {
+			return;
+		}
+
+		this.openDialog(this.dialogMode.TRANSFER, targetNode, parentNode, null);
+	}
+
+	public openDialog(mode: DialogMode, targetNode?: StorageNode | null, parentNode?: StorageNode | null, response?: any): void {
 		let dialogComponent: DialogConfig | null = null;
 		let dialogComponentStage: string = 'initial';
 
-		if (!node || node.id != this.selectedNode?.id) {
+		if ((!targetNode || targetNode.id != this.selectedNode?.id) && (!parentNode || parentNode.id != this.selectedNode?.id)) {
 			return;
 		}
+
 		switch (mode) {
 			case this.dialogMode.USE:
 				dialogComponent = null; // THIS WILL BE IMPORTED?
@@ -98,12 +179,17 @@ export class StorageComponent implements OnInit {
 			case this.dialogMode.DETAILS:
 				dialogComponent = {
 					'initial': DetailsComponent,
-					//'editNode': DetailsEditComponent
+					'editNode': DetailsEditComponent,
+					'response': DetailsResponseComponent,
+					'error': DetailsErrorComponent
 				};
 				break;
-			case this.dialogMode.DOWNLOAD:
+			case this.dialogMode.TRANSFER:
 				dialogComponent = {
-					'initial': DownloadComponent
+					'initial': DetailsComponent,
+					'editNode': DetailsEditComponent,
+					'response': DetailsResponseComponent,
+					'error': DetailsErrorComponent
 				};
 				break;
 			case this.dialogMode.REMOVE:
@@ -115,28 +201,32 @@ export class StorageComponent implements OnInit {
 				return;
 		}
 
-		this.openDialogsRecursive(dialogComponent, dialogComponentStage, node);
+		this.openDialogsRecursive(dialogComponent, dialogComponentStage, targetNode, parentNode, response);
 	}
 
-	private openDialogsRecursive(dialogComponent: any, dialogComponentStage: string, node: any): void {
-		if (dialogComponent && dialogComponent[dialogComponentStage] && node) {
+	private openDialogsRecursive(dialogComponent: any, dialogComponentStage: string, targetNode?: StorageNode | null, parentNode?: StorageNode | null, response?: any): void {
+		if (dialogComponent && dialogComponent[dialogComponentStage] && (targetNode || parentNode || response)) {
 			const dialogRef = this.dialog.open(dialogComponent[dialogComponentStage], {
 				enterAnimationDuration: '300ms',
 				exitAnimationDuration: '150ms',
 				closeOnNavigation: false,
 				disableClose: true,
-				data: node,
+				data: {
+					targetNode,
+					parentNode,
+					response
+				},
 			});
 
 			if (dialogRef.componentInstance && (dialogRef.componentInstance as any).responseEmitter) {
 				(dialogRef.componentInstance as any).responseEmitter.subscribe((response: any) => {
-					dialogRef.afterClosed().subscribe(result => {
-						this.openDialogsRecursive(dialogComponent, result, response);
+					dialogRef.afterClosed().subscribe(dialogExitCode => {
+						this.openDialogsRecursive(dialogComponent, dialogExitCode, targetNode, parentNode, response);
 					});
 				});
 			} else {
-				dialogRef.afterClosed().subscribe(result => {
-					this.openDialogsRecursive(dialogComponent, result, node);
+				dialogRef.afterClosed().subscribe(dialogExitCode => {
+					this.openDialogsRecursive(dialogComponent, dialogExitCode, targetNode, parentNode, response);
 				});
 			}
 		}

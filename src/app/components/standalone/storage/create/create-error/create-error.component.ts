@@ -25,6 +25,7 @@ import {
 	standalone: true
 })
 export class CreateErrorComponent {
+	public errorMessage: any = this.data.response.error.message;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<CreateErrorComponent>

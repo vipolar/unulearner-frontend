@@ -8,11 +8,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 
-import { StorageService } from '@services/rest/storage/storage.service';
-import { StorageNode } from '@app/app.types';
-
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { catchError, filter, map, tap } from 'rxjs';
+
+import { StorageService } from '@services/rest/storage/storage.service';
+import { StorageNode } from '@app/app.types';
 
 import { UploadComponent } from './upload/upload.component';
 
@@ -46,7 +46,7 @@ interface NewFileFormTypes {
 		MatDialogModule,
 		MatButtonModule,
 		MatInputModule,
-		//MatIconModule,
+		MatIconModule,
 		UploadComponent
 	],
 	standalone: true
@@ -60,14 +60,16 @@ export class CreateFileComponent {
 
 	public fileUploadProgress: number | null = null;
 
+	public parentNode: StorageNode = this.data.parentNode;
 	constructor(
-		@Inject(MAT_DIALOG_DATA) public data: StorageNode,
+		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<CreateFileComponent>,
 		private storageService: StorageService
-	) { }
+	) {	}
 
 	public newFileForm = new FormGroup({
-		parent: new FormControl(this.data.id, Validators.required),
+		name: new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_-][a-zA-Z0-9_.-]*$")]),
+		parent: new FormControl(this.parentNode.id, Validators.required),
 		description: new FormControl(null, Validators.required),
 		content: new FormControl(null, Validators.required),
 	});
@@ -76,22 +78,17 @@ export class CreateFileComponent {
 		const formData = new FormData();
 		const formValues = this.newFileForm.value;
 
-		Object.entries(formValues).forEach(([key, value]) => {
-			const typedValue = value as NewFileFormTypes[keyof NewFileFormTypes];
-
-			if (typedValue !== undefined && typedValue !== null) {
-				if (typedValue instanceof File) {
-					formData.append(key, typedValue, typedValue.name);
-				} else {
-					formData.append(key, typedValue.toString());
-				}
-			}
-		});
+		if (formValues.content && formValues.description && formValues.parent && formValues.name) {
+			formData.append('content', formValues.content, formValues.name);
+			formData.append('parent', formValues.parent.toString());
+			formData.append('description', formValues.description);
+		}
 
 		// Delay the activation of the Cancel button (UX things...)
 		setTimeout(() => { this.formSubmissionSubscriptionCancellable = true }, 500);
 
-		this.formSubmissionSubscription = this.storageService.saveFile(formData)
+		const storageServiceObservable = this.storageService.saveFile(formData)
+		this.formSubmissionSubscription = storageServiceObservable
 			.pipe(
 				tap(event => {
 					if (event.type === HttpEventType.UploadProgress && event.total) {
@@ -122,6 +119,10 @@ export class CreateFileComponent {
 					this.dialogRef.close('error');
 				}
 			});
+	}
+
+	public setFileName(name: string) {
+		this.newFileForm.get('name')?.setValue(name);
 	}
 
 	public cancelSubscription(): void {

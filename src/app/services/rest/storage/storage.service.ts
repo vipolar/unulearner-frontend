@@ -1,7 +1,6 @@
-import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
-import { Word, PageableResponse } from '@app/app.types';
-import { Observable, finalize } from 'rxjs';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -21,13 +20,35 @@ export class StorageService {
 		});
 	}
 
+	editFileById(id: number, formData: any): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/file/edit/${id}`, formData, {
+			reportProgress: false,
+			responseType: 'json',
+		});
+	}
+
 	getFileById(id: number): Observable<any> {
 		return this.httpClient.get(`${this.apiUrl}/file/get/${id}`);
+	}
+
+	getFileLinkById(id: number): string {
+		return `${this.apiUrl}/file/get/${id}`;
+	}
+
+	removeFileById(id: number): Observable<any> {
+		return this.httpClient.get(`${this.apiUrl}/file/remove/${id}`);
 	}
 
 	// Directories
 	saveDirectory(formData: any): Observable<any> {
 		return this.httpClient.post(`${this.apiUrl}/directory/add`, formData, {
+			reportProgress: false,
+			responseType: 'json',
+		});
+	}
+
+	editDirectoryById(id: number, formData: any): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/directory/edit/${id}`, formData, {
 			reportProgress: false,
 			responseType: 'json',
 		});
@@ -39,5 +60,9 @@ export class StorageService {
 
 	getDirectoryById(id: number): Observable<any> {
 		return this.httpClient.get(`${this.apiUrl}/directory/get/${id}`);
+	}
+
+	removeDirectoryById(id: number): Observable<any> {
+		return this.httpClient.get(`${this.apiUrl}/directory/remove/${id}`);
 	}
 }

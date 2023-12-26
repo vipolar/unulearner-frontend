@@ -28,8 +28,9 @@ import {
 })
 
 export class RemoveComponent {
+	public targetNode: StorageNode = this.data.targetNode;
 	constructor(
-		@Inject(MAT_DIALOG_DATA) public data: StorageNode,
+		@Inject(MAT_DIALOG_DATA) public data: any,
 		//public dialogRef: MatDialogRef<RemoveComponent>
 	) { }
 }

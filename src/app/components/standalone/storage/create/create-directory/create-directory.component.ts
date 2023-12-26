@@ -8,10 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 
+import { HttpResponse } from '@angular/common/http';
+
 import { StorageService } from '@services/rest/storage/storage.service';
 import { StorageNode } from '@app/app.types';
-
-import { HttpResponse } from '@angular/common/http';
 
 import {
 	MatDialogRef,
@@ -55,33 +55,34 @@ export class CreateDirectoryComponent {
 
 	public fileUploadProgress: number | null = null;
 
+	public parentNode: StorageNode = this.data.parentNode;
 	constructor(
-		@Inject(MAT_DIALOG_DATA) public data: StorageNode,
+		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<CreateDirectoryComponent>,
 		private storageService: StorageService
-	) { }
+	) {	}
 
 	public newDirectoryForm = new FormGroup({
-		parent: new FormControl(this.data.id, Validators.required),
+		name: new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_-][a-zA-Z0-9_.-]*$")]),
+		parent: new FormControl(this.parentNode.id, Validators.required),
 		description: new FormControl(null, Validators.required),
-		directory: new FormControl(null, Validators.required),
 	});
 
 	public addDirectory() {
 		const formData = new FormData();
 		const formValues = this.newDirectoryForm.value;
 
-		Object.keys(formValues).forEach((key) => {
-			const value = formValues[key as keyof NewDirectoryFormTypes];
-			if (value !== undefined && value !== null) {
-				formData.append(key, value.toString());
-			}
-		});
+		if (formValues.name && formValues.description && formValues.parent) {
+			formData.append('parent', formValues.parent.toString());
+			formData.append('description', formValues.description);
+			formData.append('name', formValues.name);
+		}
 
 		// Delay the activation of the Cancel button (UX things...)
 		setTimeout(() => { this.formSubmissionSubscriptionCancellable = true }, 500);
 
-		this.storageService.saveDirectory(formData)
+		const storageServiceObservable = this.storageService.saveDirectory(formData)
+		this.formSubmissionSubscription = storageServiceObservable
 			.subscribe({
 				next: (response: HttpResponse<any>) => {
 					this.formSubmissionSubscriptionCancellable = false;

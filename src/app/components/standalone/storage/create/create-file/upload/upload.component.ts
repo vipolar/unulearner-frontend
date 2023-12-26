@@ -1,7 +1,6 @@
-import { Component, ElementRef, HostListener, Input } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 
@@ -12,7 +11,6 @@ import { CommonModule } from '@angular/common';
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatInputModule,
 		MatButtonModule,
 		MatIconModule
 	],
@@ -25,15 +23,17 @@ import { CommonModule } from '@angular/common';
 	]
 })
 export class UploadComponent implements ControlValueAccessor {
-	@Input() progress: any;
-
 	onChange!: Function;
 	public file: File | null = null;
+	@Output() fileNameChange = new EventEmitter<string>();
 
 	@HostListener('change', ['$event.target.files']) emitFiles(event: FileList) {
 		const file = event && event.item(0);
 		this.onChange(file);
 		this.file = file;
+
+		// Emit the file name to the parent component
+		this.fileNameChange.emit(file?.name || '');
 	}
 
 	constructor(private host: ElementRef<HTMLInputElement>) {

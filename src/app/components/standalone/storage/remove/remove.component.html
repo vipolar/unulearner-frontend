@@ -1,9 +1,9 @@
-<h1 mat-dialog-title>Remove {{data.isDirectory ? 'directory' : 'file'}}</h1>
-<div mat-dialog-content *ngIf="data.isDirectory">
-    Are you sure you want to remove the <b>'{{data.name}}'</b> directory and all data within it permanently?
+<h1 mat-dialog-title>Remove {{targetNode.isDirectory ? 'directory' : 'file'}}</h1>
+<div mat-dialog-content *ngIf="targetNode.isDirectory">
+    Are you sure you want to remove the <b>'{{targetNode.name}}'</b> directory and all data within it permanently?
 </div>
-<div mat-dialog-content *ngIf="!data.isDirectory">
-    Are you sure you want to remove the <b>'{{data.name}}'</b> file permanently?
+<div mat-dialog-content *ngIf="!targetNode.isDirectory">
+    Are you sure you want to remove the <b>'{{targetNode.name}}'</b> file permanently?
 </div>
 <div mat-dialog-actions>
     <button mat-button [mat-dialog-close]="true">I'm sure!</button>

@@ -25,6 +25,7 @@ import {
 	standalone: true
 })
 export class CreateCancelledComponent {
+	public cancelMessage: String = this.data.response.message;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<CreateCancelledComponent>
