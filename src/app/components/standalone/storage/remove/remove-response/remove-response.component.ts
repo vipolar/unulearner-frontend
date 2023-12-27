@@ -14,9 +14,9 @@ import {
 } from '@angular/material/dialog';
 
 @Component({
-	selector: 'storage-create-cancelled',
-	templateUrl: './create-cancelled.component.html',
-	styleUrls: ['./create-cancelled.component.scss'],
+	selector: 'storage-remove-response',
+	templateUrl: './remove-response.component.html',
+	styleUrls: ['./remove-response.component.scss'],
 	imports: [
 		CommonModule,
 		MatDialogModule,
@@ -24,10 +24,10 @@ import {
 	],
 	standalone: true
 })
-export class CreateCancelledComponent {
-	public cancelMessage: string = this.data.response.message;
+export class RemoveResponseComponent {
+	public successMessage: any = this.data.response.response.message;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
-		public dialogRef: MatDialogRef<CreateCancelledComponent>
+		public dialogRef: MatDialogRef<RemoveResponseComponent>
 	) { }
 }

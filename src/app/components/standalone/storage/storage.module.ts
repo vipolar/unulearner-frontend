@@ -16,8 +16,6 @@ import { MatIconModule } from '@angular/material/icon';
 // The storage tree and its CRUD
 import { StorageComponent } from './storage.component';
 
-
-
 @NgModule({
 	declarations: [
 		StorageComponent

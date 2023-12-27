@@ -27,7 +27,7 @@ import {
 	standalone: true
 })
 export class CreateComponent {
-	public parentNode: StorageNode = this.data.parentNode;
+	public destinationNode: StorageNode = this.data.destinationNode;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<CreateComponent>,

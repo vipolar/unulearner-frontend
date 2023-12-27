@@ -55,7 +55,7 @@ export class CreateDirectoryComponent {
 
 	public fileUploadProgress: number | null = null;
 
-	public parentNode: StorageNode = this.data.parentNode;
+	public destinationNode: StorageNode = this.data.destinationNode;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<CreateDirectoryComponent>,
@@ -64,7 +64,7 @@ export class CreateDirectoryComponent {
 
 	public newDirectoryForm = new FormGroup({
 		name: new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_-][a-zA-Z0-9_.-]*$")]),
-		parent: new FormControl(this.parentNode.id, Validators.required),
+		parent: new FormControl(this.destinationNode.id, Validators.required),
 		description: new FormControl(null, Validators.required),
 	});
 
@@ -89,7 +89,7 @@ export class CreateDirectoryComponent {
 					this.formSubmissionResponse = response;
 
 					this.responseEmitter.emit({ response });
-					this.dialogRef.close('response');
+					this.dialogRef.close('success');
 				},
 				error: (error: any) => {
 					this.formSubmissionSubscriptionCancellable = false;

@@ -82,7 +82,7 @@ export class DetailsEditComponent implements OnInit {
 					this.formSubmissionResponse = response;
 
 					this.responseEmitter.emit({ response });
-					this.dialogRef.close('response');
+					this.dialogRef.close('success');
 				},
 				error: (error: any) => {
 					this.formSubmissionSubscriptionCancellable = false;

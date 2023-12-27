@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
 
@@ -28,6 +28,9 @@ import {
 	standalone: true
 })
 export class DetailsComponent {
+	public formattedDateCreated: string | null = null;
+	public formattedDateUpdated: string | null = null;
+
 	public targetNode: StorageNode = this.data.targetNode;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
@@ -38,8 +41,8 @@ export class DetailsComponent {
 	public initiateDownload() {
 		// Create an anchor element
 		const downloadLink = document.createElement('a');
-		downloadLink.href = this.storageService.getFileLinkById(this.data.id);
-		downloadLink.download = this.data.name;
+		downloadLink.href = this.storageService.getFileLinkById(this.targetNode.id);
+		downloadLink.download = this.targetNode.name;
 
 		// Append the anchor to the body
 		document.body.appendChild(downloadLink);
@@ -49,6 +52,14 @@ export class DetailsComponent {
 		document.body.removeChild(downloadLink);
 
 		// Close the dialog
-		this.dialogRef.close('error');
+		this.dialogRef.close();
+	}
+
+	ngOnInit() {
+		const dateCreated = new Date(this.targetNode.created);
+		const dateUpdated = new Date(this.targetNode.updated);
+
+		this.formattedDateCreated = new DatePipe('en-US').transform(dateCreated, 'yyyy-MM-dd HH:mm:ss');
+		this.formattedDateUpdated = new DatePipe('en-US').transform(dateUpdated, 'yyyy-MM-dd HH:mm:ss');
 	}
 }

@@ -20,23 +20,37 @@ export class StorageService {
 		});
 	}
 
-	editFileById(id: number, formData: any): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/file/edit/${id}`, formData, {
+	copyFileByIdToById(targetId: string, destinationId: string, conflictOption: string): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/file/copy/${targetId}/to/${destinationId}?conflict=${conflictOption}`, null, {
 			reportProgress: false,
 			responseType: 'json',
 		});
 	}
 
-	getFileById(id: number): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/file/get/${id}`);
+	moveFileByIdToById(targetId: string, destinationId: string, conflictOption: string): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/file/move/${targetId}/to/${destinationId}?conflict=${conflictOption}`, null, {
+			reportProgress: false,
+			responseType: 'json',
+		});
 	}
 
-	getFileLinkById(id: number): string {
-		return `${this.apiUrl}/file/get/${id}`;
+	editFileById(targetId: string, formData: any): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/file/edit/${targetId}`, formData, {
+			reportProgress: false,
+			responseType: 'json',
+		});
 	}
 
-	removeFileById(id: number): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/file/remove/${id}`);
+	getFileById(targetId: string): Observable<any> {
+		return this.httpClient.get(`${this.apiUrl}/file/get/${targetId}`);
+	}
+
+	getFileLinkById(targetId: string): string {
+		return `${this.apiUrl}/file/get/${targetId}`;
+	}
+
+	removeFileById(targetId: string): Observable<any> {
+		return this.httpClient.delete(`${this.apiUrl}/file/delete/${targetId}`);
 	}
 
 	// Directories
@@ -47,8 +61,22 @@ export class StorageService {
 		});
 	}
 
-	editDirectoryById(id: number, formData: any): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/directory/edit/${id}`, formData, {
+	copyDirectoryByIdToById(targetId: string, destinationId: string, conflictOption: string): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/directory/copy/${targetId}/to/${destinationId}?conflict=${conflictOption}`, null, {
+			reportProgress: false,
+			responseType: 'json',
+		});
+	}
+
+	moveDirectoryByIdToById(targetId: string, destinationId: string, conflictOption: string): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/directory/move/${targetId}/to/${destinationId}?conflict=${conflictOption}`, null, {
+			reportProgress: false,
+			responseType: 'json',
+		});
+	}
+
+	editDirectoryById(targetId: string, formData: any): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/directory/edit/${targetId}`, formData, {
 			reportProgress: false,
 			responseType: 'json',
 		});
@@ -58,11 +86,11 @@ export class StorageService {
 		return this.httpClient.get(`${this.apiUrl}/directory/get/root`);
 	}
 
-	getDirectoryById(id: number): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/directory/get/${id}`);
+	getDirectoryById(targetId: string): Observable<any> {
+		return this.httpClient.get(`${this.apiUrl}/directory/get/${targetId}`);
 	}
 
-	removeDirectoryById(id: number): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/directory/remove/${id}`);
+	removeDirectoryById(targetId: string): Observable<any> {
+		return this.httpClient.delete(`${this.apiUrl}/directory/delete/${targetId}`);
 	}
 }

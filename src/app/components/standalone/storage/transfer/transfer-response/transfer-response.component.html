@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>{{resultNode.isDirectory ? 'Directory created' : 'File uploaded'}} successfully!</h1>
+<div mat-dialog-content>
+	<b>Name: {{resultNode.name}}</b><br>
+	<b>OnDisk: {{resultNode.url}}</b><br>
+	<b>Children: {{resultNode.isDirectory ? resultNode.childNodes.length : 'N/A'}}</b><br>
+	<b>Created on: {{formattedDateCreated}}</b><br>
+	<b>Updated on: {{formattedDateUpdated}}</b><br>
+	<b>Description: {{resultNode.description}}</b><br>
+</div>
+<div mat-dialog-actions>
+	<button type="button" mat-button [mat-dialog-close]="true" cdkFocusInitial>Ok</button>
+</div>

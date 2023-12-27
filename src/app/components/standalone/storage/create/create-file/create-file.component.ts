@@ -17,7 +17,6 @@ import { StorageNode } from '@app/app.types';
 import { UploadComponent } from './upload/upload.component';
 
 import {
-	//MatDialog,
 	MatDialogRef,
 	MatDialogClose,
 	MatDialogTitle,
@@ -26,12 +25,6 @@ import {
 	MatDialogModule,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-
-interface NewFileFormTypes {
-	content: File;
-	parent: number;
-	description: string;
-}
 
 @Component({
 	selector: 'storage-create-file',
@@ -60,7 +53,7 @@ export class CreateFileComponent {
 
 	public fileUploadProgress: number | null = null;
 
-	public parentNode: StorageNode = this.data.parentNode;
+	public destinationNode: StorageNode = this.data.destinationNode;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<CreateFileComponent>,
@@ -69,7 +62,7 @@ export class CreateFileComponent {
 
 	public newFileForm = new FormGroup({
 		name: new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_-][a-zA-Z0-9_.-]*$")]),
-		parent: new FormControl(this.parentNode.id, Validators.required),
+		parent: new FormControl(this.destinationNode.id, Validators.required),
 		description: new FormControl(null, Validators.required),
 		content: new FormControl(null, Validators.required),
 	});
@@ -108,7 +101,7 @@ export class CreateFileComponent {
 					this.fileUploadProgress = null;
 
 					this.responseEmitter.emit({ response });
-					this.dialogRef.close('response');
+					this.dialogRef.close('success');
 				},
 				error: (error: any) => {
 					this.formSubmissionSubscriptionCancellable = false;

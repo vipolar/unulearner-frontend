@@ -20,7 +20,7 @@ export interface Dictionary {
 }
 
 export interface StorageNode {
-	id: number;
+	id: string;
 	url: string;
 	name: string;
 	created: string;
