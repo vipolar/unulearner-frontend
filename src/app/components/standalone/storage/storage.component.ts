@@ -39,7 +39,10 @@ export enum DialogMode {
 }
 
 interface DialogConfig {
-	[key: string]: any;
+	[key: string]: {
+		dialogComponent: any,
+		dialogFunction: any
+	};
 }
 
 @Component({
@@ -122,9 +125,9 @@ export class StorageComponent implements OnInit {
 			if (dropTargetElement?.closest('.mat-nested-tree-node')) {
 				const nodeDroppedEvent = new CustomEvent('nodeDropped', {
 					bubbles: true, // Allow the event to bubble up the DOM hierarchy
-					detail: { data : node }, // You can attach additional data
+					detail: { data: node }, // You can attach additional data
 				});
-			  
+
 				dropTargetElement?.dispatchEvent(nodeDroppedEvent);
 			}
 
@@ -149,7 +152,7 @@ export class StorageComponent implements OnInit {
 
 	public onNodeDrop(event: any, destinationNode: StorageNode): void {
 		event.stopPropagation(); // Only the first hit is needed
-		const targetNode : StorageNode = event.detail.data;
+		const targetNode: StorageNode = event.detail.data;
 
 		if (targetNode == null || destinationNode == null) {
 			return;
@@ -163,8 +166,8 @@ export class StorageComponent implements OnInit {
 	}
 
 	public openDialog(mode: DialogMode, targetNode?: StorageNode | null, destinationNode?: StorageNode | null, response?: any): void {
-		let dialogComponent: DialogConfig | null = null;
-		let dialogComponentStage: string = 'initial';
+		let dialogConfig: DialogConfig | null = null;
+		let dialogStage: string = 'initial';
 
 		// Check if at least one of the nodes is present and is the same as the selected node or both of the nodes are present (no need for any to be selected) and mode is TRANSFER
 		if ((!targetNode || targetNode.id != this.selectedNode?.id) && (!destinationNode || destinationNode.id != this.selectedNode?.id) && (!targetNode || !destinationNode || mode != this.dialogMode.TRANSFER)) {
@@ -173,74 +176,139 @@ export class StorageComponent implements OnInit {
 
 		switch (mode) {
 			case this.dialogMode.USE:
-				dialogComponent = null; // THIS WILL BE IMPORTED?
+				dialogConfig = {
+					'initial': {
+						dialogComponent: null,
+						dialogFunction: null,
+					}
+				};
 				break;
 			case this.dialogMode.CREATE:
-				dialogComponent = {
-					'initial': CreateComponent,
-					'createFile': CreateFileComponent,
-					'createDirectory': CreateDirectoryComponent,
-					'cancelled': CreateCancelledComponent,
-					'success': CreateResponseComponent,
-					'error': CreateErrorComponent
+				dialogConfig = {
+					'initial': {
+						dialogComponent: CreateComponent,
+						dialogFunction: null,
+					},
+					'createFile': {
+						dialogComponent: CreateFileComponent,
+						dialogFunction: null,
+					},
+					'createDirectory': {
+						dialogComponent: CreateDirectoryComponent,
+						dialogFunction: null,
+					},
+					'cancelled': {
+						dialogComponent: CreateCancelledComponent,
+						dialogFunction: null,
+					},
+					'success': {
+						dialogComponent: CreateResponseComponent,
+						dialogFunction: null,
+					},
+					'error': {
+						dialogComponent: CreateErrorComponent,
+						dialogFunction: null,
+					}
 				};
 				break;
 			case this.dialogMode.DETAILS:
-				dialogComponent = {
-					'initial': DetailsComponent,
-					'editNode': DetailsEditComponent,
-					'success': DetailsResponseComponent,
-					'error': DetailsErrorComponent
+				dialogConfig = {
+					'initial': {
+						dialogComponent: DetailsComponent,
+						dialogFunction: null,
+					},
+					'editNode': {
+						dialogComponent: DetailsEditComponent,
+						dialogFunction: null,
+					},
+					'success': {
+						dialogComponent: DetailsResponseComponent,
+						dialogFunction: null,
+					},
+					'error': {
+						dialogComponent: DetailsErrorComponent,
+						dialogFunction: null,
+					}
 				};
 				break;
 			case this.dialogMode.TRANSFER:
-				dialogComponent = {
-					'initial': TransferComponent,
-					'cancelled': TransferCancelledComponent,
-					'success': TransferResponseComponent,
-					'error': TransferErrorComponent
+				dialogConfig = {
+					'initial': {
+						dialogComponent: TransferComponent,
+						dialogFunction: null,
+					},
+					'cancelled': {
+						dialogComponent: TransferCancelledComponent,
+						dialogFunction: null,
+					},
+					'success': {
+						dialogComponent: TransferResponseComponent,
+						dialogFunction: null,
+					},
+					'error': {
+						dialogComponent: TransferErrorComponent,
+						dialogFunction: null,
+					}
 				};
 				break;
 			case this.dialogMode.REMOVE:
-				dialogComponent = {
-					'initial': RemoveComponent,
-					'cancelled': RemoveCancelledComponent,
-					'success': RemoveResponseComponent,
-					'error': RemoveErrorComponent
+				dialogConfig = {
+					'initial': {
+						dialogComponent: RemoveComponent,
+						dialogFunction: null,
+					},
+					'cancelled': {
+						dialogComponent: RemoveCancelledComponent,
+						dialogFunction: null,
+					},
+					'success': {
+						dialogComponent: RemoveResponseComponent,
+						dialogFunction: null,
+					},
+					'error': {
+						dialogComponent: RemoveErrorComponent,
+						dialogFunction: null,
+					}
 				};
 				break;
 			default:
 				return;
 		}
 
-		this.openDialogsRecursive(dialogComponent, dialogComponentStage, targetNode, destinationNode, response);
+		this.openDialogsRecursive(dialogConfig, dialogStage, targetNode, destinationNode, response);
 	}
 
-	private openDialogsRecursive(dialogComponent: any, dialogComponentStage: string, targetNode?: StorageNode | null, destinationNode?: StorageNode | null, response?: any): void {
-		if (dialogComponent && dialogComponent[dialogComponentStage] && (targetNode || destinationNode || response)) {
-			const dialogRef = this.dialog.open(dialogComponent[dialogComponentStage], {
-				enterAnimationDuration: '300ms',
-				exitAnimationDuration: '150ms',
-				closeOnNavigation: false,
-				disableClose: true,
-				data: {
-					targetNode,
-					destinationNode,
-					response
-				},
-			});
-			//TODO: 'success' handler;
-			if (dialogRef.componentInstance && (dialogRef.componentInstance as any).responseEmitter) {
-				(dialogRef.componentInstance as any).responseEmitter.subscribe((response: any) => {
-					dialogRef.afterClosed().subscribe(dialogExitCode => {
-						this.openDialogsRecursive(dialogComponent, dialogExitCode, targetNode, destinationNode, response);
-					});
-				});
-			} else {
+	private openDialogsRecursive(dialogConfig: DialogConfig, dialogStage: string, targetNode?: StorageNode | null, destinationNode?: StorageNode | null, response?: any): void {
+		if (!dialogConfig || !dialogConfig[dialogStage] || (!targetNode && !destinationNode && !response)) {
+			return;
+		}
+
+		const dialogRef = this.dialog.open(dialogConfig[dialogStage].dialogComponent, {
+			enterAnimationDuration: '300ms',
+			exitAnimationDuration: '150ms',
+			closeOnNavigation: false,
+			disableClose: true,
+			data: {
+				targetNode,
+				destinationNode,
+				response
+			},
+		});
+
+		if (dialogRef.componentInstance && (dialogRef.componentInstance as any).responseEmitter) {
+			(dialogRef.componentInstance as any).responseEmitter.subscribe((response: any) => {
 				dialogRef.afterClosed().subscribe(dialogExitCode => {
-					this.openDialogsRecursive(dialogComponent, dialogExitCode, targetNode, destinationNode, response);
+					this.openDialogsRecursive(dialogConfig, dialogExitCode, targetNode, destinationNode, response);
 				});
-			}
+			});
+		} else {
+			dialogRef.afterClosed().subscribe(dialogExitCode => {
+				this.openDialogsRecursive(dialogConfig, dialogExitCode, targetNode, destinationNode, response);
+			});
+		}
+
+		if (dialogConfig[dialogStage].dialogFunction != null) {
+			dialogConfig[dialogStage].dialogFunction();
 		}
 	}
 
