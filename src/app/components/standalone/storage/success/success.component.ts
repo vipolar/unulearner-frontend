@@ -16,9 +16,9 @@ import {
 } from '@angular/material/dialog';
 
 @Component({
-	selector: 'storage-create-response',
-	templateUrl: './create-response.component.html',
-	styleUrls: ['./create-response.component.scss'],
+	selector: 'storage-success',
+	templateUrl: './success.component.html',
+	styleUrls: ['./success.component.scss'],
 	imports: [
 		CommonModule,
 		MatDialogModule,
@@ -26,17 +26,17 @@ import {
 	],
 	standalone: true
 })
-export class CreateResponseComponent implements OnInit {
+export class SuccessComponent implements OnInit {
 	public formattedDateCreated: string | null = null;
 
-	public resultNode: StorageNode = this.data.response.response;
+	public successNode: StorageNode = this.data.response.response;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
-		public dialogRef: MatDialogRef<CreateResponseComponent>
+		public dialogRef: MatDialogRef<SuccessComponent>
 	) { }
 
 	ngOnInit() {
-		const dateCreated = new Date(this.resultNode.created);
+		const dateCreated = new Date(this.data.successNode.created);
 		this.formattedDateCreated = new DatePipe('en-US').transform(dateCreated, 'yyyy-MM-dd HH:mm:ss');
 	}
 }

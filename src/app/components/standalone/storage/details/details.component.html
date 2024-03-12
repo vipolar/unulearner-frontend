@@ -1,15 +1,78 @@
-<h1 mat-dialog-title>{{targetNode.isDirectory ? 'Directory' : 'File'}} details:</h1>
-<div mat-dialog-content>
-	<b>Name: {{targetNode.name}}</b><br>
-	<b>OnDisk: {{targetNode.url}}</b><br>
-	<b>Children: {{targetNode.isDirectory ? targetNode.childNodes.length : 'N/A'}}</b><br>
-	<b>Created on: {{formattedDateCreated}}</b><br>
-	<b>Last updated on: {{formattedDateUpdated}}</b><br>
-	<b>Description: {{targetNode.description}}</b><br>
+<h1 mat-dialog-title class="mat-dialog-title">Edit {{data.targetNode.children != null ? 'directory' : 'file'}}</h1>
+<div mat-dialog-content class="mat-dialog-content">
+	<form id="nodeForm" class="mat-dialog-content-form" enctype="multipart/form-data" [formGroup]="editNodeForm"
+		(ngSubmit)="editNode()">
+		<mat-form-field class="mat-dialog-content-form-field" appearance="outline" subscriptSizing="dynamic">
+			<mat-label class="mat-dialog-content-form-field-label">Name:</mat-label>
+			<input class="mat-dialog-content-form-field-input" matInput type="text" formControlName="name"
+				placeholder="Name of the {{data.targetNode.children != null ? 'directory' : 'file'}}"
+				required [readonly]="data.targetNode.children">
+			<div matSuffix class="mat-dialog-content-form-field-suffix" *ngIf="data.targetNode.children">
+				<button class="mat-dialog-content-form-field-suffix-button" type="button" mat-icon-button
+					color="primary" [disabled]="true" aria-label="Not editable">
+					<mat-icon>{{'lock_outline'}}</mat-icon>
+				</button>
+			</div>
+		</mat-form-field>
+		<mat-form-field class="mat-dialog-content-form-field" appearance="outline" subscriptSizing="dynamic">
+			<mat-label class="mat-dialog-content-form-field-label">OnDisk:</mat-label>
+			<input class="mat-dialog-content-form-field-input" matInput type="text" [value]="data.targetNode.onDiskURL"
+				required [readonly]="true">
+			<div matSuffix class="mat-dialog-content-form-field-suffix">
+				<button class="mat-dialog-content-form-field-suffix-button" type="button" mat-icon-button
+					color="primary" [disabled]="true" aria-label="Not editable">
+					<mat-icon>{{'lock_outline'}}</mat-icon>
+				</button>
+			</div>
+		</mat-form-field>
+		<mat-form-field class="mat-dialog-content-form-field" appearance="outline" subscriptSizing="dynamic"
+			*ngIf="data.targetNode.children != null">
+			<mat-label class="mat-dialog-content-form-field-label">Children:</mat-label>
+			<input class="mat-dialog-content-form-field-input" matInput type="text"
+				[value]="data.targetNode.children.length" required [readonly]="true">
+			<div matSuffix class="mat-dialog-content-form-field-suffix">
+				<button class="mat-dialog-content-form-field-suffix-button" type="button" mat-icon-button
+					color="primary" [disabled]="true" aria-label="Not editable">
+					<mat-icon>{{'lock_outline'}}</mat-icon>
+				</button>
+			</div>
+		</mat-form-field>
+		<mat-form-field class="mat-dialog-content-form-field" appearance="outline" subscriptSizing="dynamic">
+			<mat-label class="mat-dialog-content-form-field-label">Created on:</mat-label>
+			<input class="mat-dialog-content-form-field-input" matInput type="text" [value]="formattedDateCreated"
+				required [readonly]="true">
+			<div matSuffix class="mat-dialog-content-form-field-suffix">
+				<button class="mat-dialog-content-form-field-suffix-button" type="button" mat-icon-button
+					color="primary" [disabled]="true" aria-label="Not editable">
+					<mat-icon>{{'lock_outline'}}</mat-icon>
+				</button>
+			</div>
+		</mat-form-field>
+		<mat-form-field class="mat-dialog-content-form-field" appearance="outline" subscriptSizing="dynamic">
+			<mat-label class="mat-dialog-content-form-field-label">Last updated on:</mat-label>
+			<input class="mat-dialog-content-form-field-input" matInput type="text" [value]="formattedDateUpdated"
+				required [readonly]="true">
+			<div matSuffix class="mat-dialog-content-form-field-suffix">
+				<button class="mat-dialog-content-form-field-suffix-button" type="button" mat-icon-button
+					color="primary" [disabled]="true" aria-label="Not editable">
+					<mat-icon>{{'lock_outline'}}</mat-icon>
+				</button>
+			</div>
+		</mat-form-field>
+		<mat-form-field class="mat-dialog-content-form-field" appearance="outline" subscriptSizing="dynamic">
+			<mat-label class="mat-dialog-content-form-field-label">Description:</mat-label>
+			<textarea class="mat-dialog-content-form-field-input" matInput type="text" formControlName="description"
+				placeholder="A short description of the new {{data.targetNode.children != null ? 'directory' : 'file'}} and its purpose..."
+				required [readonly]="false" >
+			</textarea>
+		</mat-form-field>
+	</form>
 </div>
-<div mat-dialog-actions>
-	<button type="button" mat-button [disabled]="targetNode.isDirectory" (click)="initiateDownload()">Download</button>
-	<button type="button" mat-button [disabled]="targetNode.url.length == 0" [mat-dialog-close]="'editNode'">Edit
-		{{targetNode.isDirectory ? 'directory' : 'file'}}</button>
-	<button type="button" mat-button [mat-dialog-close]="true" cdkFocusInitial>Ok</button>
+<div mat-dialog-actions class="mat-dialog-actions">
+	<button type="submit" mat-button class="mat-dialog-actions-button" *ngIf="!formSubmissionSubscription"
+		[disabled]="!editNodeForm.valid" form="nodeForm">Submit</button>
+	<button type="button" mat-button class="mat-dialog-actions-button" *ngIf="formSubmissionSubscription"
+		[disabled]="!formSubmissionSubscriptionCancellable" (click)="cancelSubscription()">Cancel</button>
+	<button type="button" mat-button class="mat-dialog-actions-button" [mat-dialog-close]="false"
+		[disabled]="formSubmissionSubscription" cdkFocusInitial>Go back</button>
 </div>

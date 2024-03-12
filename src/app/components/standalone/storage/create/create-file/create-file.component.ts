@@ -61,26 +61,24 @@ export class CreateFileComponent {
 	) {	}
 
 	public newFileForm = new FormGroup({
-		name: new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_-][a-zA-Z0-9_.-]*$")]),
-		parent: new FormControl(this.destinationNode.id, Validators.required),
-		description: new FormControl(null, Validators.required),
+		name: new FormControl('', [Validators.required]),
 		content: new FormControl(null, Validators.required),
+		description: new FormControl(null, Validators.required),
 	});
 
 	public addFile(): void {
 		const formData = new FormData();
 		const formValues = this.newFileForm.value;
 
-		if (formValues.content && formValues.description && formValues.parent && formValues.name) {
+		if (formValues.name && formValues.content && formValues.description) {
 			formData.append('content', formValues.content, formValues.name);
-			formData.append('parent', formValues.parent.toString());
 			formData.append('description', formValues.description);
 		}
 
 		// Delay the activation of the Cancel button (UX things...)
 		setTimeout(() => { this.formSubmissionSubscriptionCancellable = true }, 500);
 
-		const storageServiceObservable = this.storageService.saveFile(formData)
+		const storageServiceObservable = this.storageService.addFileToById(formData, this.data.destinationNode.id)
 		this.formSubmissionSubscription = storageServiceObservable
 			.pipe(
 				tap(event => {

@@ -1,7 +1,14 @@
-import { Component, Inject } from '@angular/core';
+import { ReactiveFormsModule, FormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+
+import { HttpResponse } from '@angular/common/http';
 
 import { StorageService } from '@services/rest/storage/storage.service';
 import { StorageNode } from '@app/app.types';
@@ -21,43 +28,86 @@ import {
 	templateUrl: './details.component.html',
 	styleUrls: ['./details.component.scss'],
 	imports: [
+		FormsModule,
 		CommonModule,
+		ReactiveFormsModule,
+		MatProgressBarModule,
+		MatFormFieldModule,
 		MatDialogModule,
 		MatButtonModule,
+		MatInputModule,
+		MatIconModule
 	],
 	standalone: true
 })
-export class DetailsComponent {
+export class DetailsComponent implements OnInit {
+	@Output() responseEmitter: EventEmitter<any> = new EventEmitter();
+
+	public formSubmissionSubscriptionCancellable: boolean = false;
+	public formSubmissionSubscription: any = undefined;
+	public formSubmissionResponse: any = undefined;
+
 	public formattedDateCreated: string | null = null;
 	public formattedDateUpdated: string | null = null;
 
-	public targetNode: StorageNode = this.data.targetNode;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<DetailsComponent>,
 		private storageService: StorageService
-	) { }
+	) {	}
 
-	public initiateDownload() {
-		// Create an anchor element
-		const downloadLink = document.createElement('a');
-		downloadLink.href = this.storageService.getFileLinkById(this.targetNode.id);
-		downloadLink.download = this.targetNode.name;
+	public editNodeForm = new FormGroup({
+		description: new FormControl(this.data.targetNode.description, Validators.required),
+		name: new FormControl(this.data.targetNode.onDiskName, Validators.required)
+	});
 
-		// Append the anchor to the body
-		document.body.appendChild(downloadLink);
-		downloadLink.click();
+	public editNode() {
+		const formData = new FormData();
+		const formValues = this.editNodeForm.value;
 
-		// Remove the anchor from the body
-		document.body.removeChild(downloadLink);
+		if (formValues.description && formValues.name) {
+			formData.append('description', formValues.description);
+			formData.append('name', formValues.name);
+		}
 
-		// Close the dialog
-		this.dialogRef.close();
+		/* Delay activation of the Cancel button (UX things...) */
+		setTimeout(() => { this.formSubmissionSubscriptionCancellable = true }, 500);
+
+		const storageServiceObservable = this.data.targetNode.children != null ? this.storageService.updateDirectoryById(this.data.targetNode.id, formData) : this.storageService.updateFileById(this.data.targetNode.id, formData);
+		this.formSubmissionSubscription = storageServiceObservable
+			.subscribe({
+				next: (response: HttpResponse<any>) => {
+					this.formSubmissionSubscriptionCancellable = false;
+					this.formSubmissionResponse = response;
+
+					this.responseEmitter.emit({ response });
+					this.dialogRef.close('success');
+				},
+				error: (error: any) => {
+					this.formSubmissionSubscriptionCancellable = false;
+					this.formSubmissionResponse = error;
+
+					this.responseEmitter.emit({ error });
+					this.dialogRef.close('error');
+				}
+			});
+	}
+
+	public cancelSubscription(): void {
+		this.formSubmissionSubscription.unsubscribe();
+		this.formSubmissionSubscriptionCancellable = false;
+		this.formSubmissionSubscription = undefined;
+
+		this.responseEmitter.emit({
+			message: `${this.data.targetNode.children != null ? 'Directory' : 'File'} edit was cancelled by user`
+		});
+
+		this.dialogRef.close('cancel');
 	}
 
 	ngOnInit() {
-		const dateCreated = new Date(this.targetNode.created);
-		const dateUpdated = new Date(this.targetNode.updated);
+		const dateCreated = new Date(this.data.targetNode.created);
+		const dateUpdated = new Date(this.data.targetNode.updated);
 
 		this.formattedDateCreated = new DatePipe('en-US').transform(dateCreated, 'yyyy-MM-dd HH:mm:ss');
 		this.formattedDateUpdated = new DatePipe('en-US').transform(dateUpdated, 'yyyy-MM-dd HH:mm:ss');

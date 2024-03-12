@@ -60,10 +60,11 @@ export class TransferComponent implements OnInit {
 		// Delay the activation of the Cancel button (UX things...)
 		setTimeout(() => { this.formSubmissionSubscriptionCancellable = true }, 500);
 
-		const storageServiceObservable = this.targetNode.isDirectory ? this.storageService.copyDirectoryByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict) : this.storageService.copyFileByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict);
+		const storageServiceObservable = this.targetNode.children != null ? this.storageService.copyDirectoryByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict) : this.storageService.copyFileByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict);
 		this.formSubmissionSubscription = storageServiceObservable
 			.subscribe({
 				next: (response: HttpResponse<any>) => {
+					console.log(response);
 					this.formSubmissionSubscriptionCancellable = false;
 					this.formSubmissionResponse = response;
 
@@ -84,7 +85,7 @@ export class TransferComponent implements OnInit {
 		// Delay the activation of the Cancel button (UX things...)
 		setTimeout(() => { this.formSubmissionSubscriptionCancellable = true }, 500);
 
-		const storageServiceObservable = this.targetNode.isDirectory ? this.storageService.moveDirectoryByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict) : this.storageService.moveFileByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict);
+		const storageServiceObservable = this.targetNode.children != null ? this.storageService.moveDirectoryByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict) : this.storageService.moveFileByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict);
 		this.formSubmissionSubscription = storageServiceObservable
 			.subscribe({
 				next: (response: HttpResponse<any>) => {
@@ -109,7 +110,7 @@ export class TransferComponent implements OnInit {
 		this.formSubmissionSubscriptionCancellable = false;
 		this.formSubmissionSubscription = undefined;
 
-		this.responseEmitter.emit({ message: `${this.targetNode.isDirectory ? 'Directory' : 'File'} transfer was cancelled by user` });
+		this.responseEmitter.emit({ message: `${this.targetNode.children != null ? 'Directory' : 'File'} transfer was cancelled by user` });
 		this.dialogRef.close('cancelled');
 	}
 

@@ -63,8 +63,7 @@ export class CreateDirectoryComponent {
 	) {	}
 
 	public newDirectoryForm = new FormGroup({
-		name: new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_-][a-zA-Z0-9_.-]*$")]),
-		parent: new FormControl(this.destinationNode.id, Validators.required),
+		name: new FormControl('', [Validators.required]),
 		description: new FormControl(null, Validators.required),
 	});
 
@@ -72,16 +71,15 @@ export class CreateDirectoryComponent {
 		const formData = new FormData();
 		const formValues = this.newDirectoryForm.value;
 
-		if (formValues.name && formValues.description && formValues.parent) {
-			formData.append('parent', formValues.parent.toString());
+		if (formValues.name && formValues.description) {
 			formData.append('description', formValues.description);
-			formData.append('name', formValues.name);
+			formData.append('directory', formValues.name);
 		}
 
 		// Delay the activation of the Cancel button (UX things...)
 		setTimeout(() => { this.formSubmissionSubscriptionCancellable = true }, 500);
 
-		const storageServiceObservable = this.storageService.saveDirectory(formData)
+		const storageServiceObservable = this.storageService.addDirectoryToById(formData, this.destinationNode.id)
 		this.formSubmissionSubscription = storageServiceObservable
 			.subscribe({
 				next: (response: HttpResponse<any>) => {
@@ -95,8 +93,18 @@ export class CreateDirectoryComponent {
 					this.formSubmissionSubscriptionCancellable = false;
 					this.formSubmissionResponse = error;
 
+					if (error.status == 409) {
+						this.responseEmitter.emit({ error });
+						this.dialogRef.close('conflict');
+					}
+
+					if (error.status == 403 || error.status == 401) {
+						this.responseEmitter.emit({ error });
+						this.dialogRef.close('denied');
+					}
+					
 					this.responseEmitter.emit({ error });
-					this.dialogRef.close('error');
+					this.dialogRef.close('failure');
 				}
 			});
 	}
@@ -106,7 +114,7 @@ export class CreateDirectoryComponent {
 		this.formSubmissionSubscriptionCancellable = false;
 		this.formSubmissionSubscription = undefined;
 
-		this.responseEmitter.emit({ message: 'Directory creation was cancelled by user' });
-		this.dialogRef.close('cancelled');
+		this.responseEmitter.emit({ message: 'Directory creation cancelled!' });
+		this.dialogRef.close('cancel');
 	}
 }

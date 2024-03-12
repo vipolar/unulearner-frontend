@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { KeycloakEventService } from '@services/keycloak/keycloak-event.service';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 //import { EnglishModule } from '@components/rest/content/english/english.module';
 
@@ -56,7 +56,7 @@ const routes: Routes = [
 		CommonModule,
 		//EnglishModule,
 		RouterModule.forRoot(routes),
-		NoopAnimationsModule,
+		BrowserAnimationsModule,
 	],
 	providers: [
 		{

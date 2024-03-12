@@ -14,9 +14,9 @@ import {
 } from '@angular/material/dialog';
 
 @Component({
-	selector: 'storage-remove-response',
-	templateUrl: './remove-response.component.html',
-	styleUrls: ['./remove-response.component.scss'],
+	selector: 'storage-failure',
+	templateUrl: './failure.component.html',
+	styleUrls: ['./failure.component.scss'],
 	imports: [
 		CommonModule,
 		MatDialogModule,
@@ -24,10 +24,9 @@ import {
 	],
 	standalone: true
 })
-export class RemoveResponseComponent {
-	public successMessage: any = this.data.response.response.message;
+export class FailureComponent {
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
-		public dialogRef: MatDialogRef<RemoveResponseComponent>
+		public dialogRef: MatDialogRef<FailureComponent>
 	) { }
 }

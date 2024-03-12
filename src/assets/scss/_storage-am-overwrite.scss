@@ -1,0 +1,38 @@
+.storage {
+	.storage-tree {
+		.storage-tree-node {
+			.storage-tree-node-button {
+				.mdc-button__label {
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					text-align: left;
+					overflow: hidden;
+					flex-grow: 1;
+				}
+			}
+		}
+	}
+}
+
+.storage-options {
+	.storage-options-button {
+		justify-content: flex-start;
+		flex-direction: row;
+		min-height: 36px;
+		display: flex;
+		width: 100%;
+
+		.storage-options-button-icon {
+			margin-right: 0.5rem;
+			font-size: 1.75rem;
+			height: 1.75rem;
+			width: 1.75rem;
+		}
+
+		.storage-options-button-label {
+			font-size: 1.5rem;
+			height: 1.5rem;
+			width: 1.5rem;
+		}
+	}
+}

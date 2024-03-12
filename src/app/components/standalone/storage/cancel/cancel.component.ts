@@ -14,9 +14,9 @@ import {
 } from '@angular/material/dialog';
 
 @Component({
-	selector: 'storage-remove-error',
-	templateUrl: './remove-error.component.html',
-	styleUrls: ['./remove-error.component.scss'],
+	selector: 'storage-cancel',
+	templateUrl: './cancel.component.html',
+	styleUrls: ['./cancel.component.scss'],
 	imports: [
 		CommonModule,
 		MatDialogModule,
@@ -24,10 +24,9 @@ import {
 	],
 	standalone: true
 })
-export class RemoveErrorComponent {
-	public errorMessage: any = this.data.response.error.message;
+export class CancelComponent {
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
-		public dialogRef: MatDialogRef<RemoveErrorComponent>
+		public dialogRef: MatDialogRef<CancelComponent>
 	) { }
 }

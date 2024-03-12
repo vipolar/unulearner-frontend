@@ -8,41 +8,29 @@ import { MatDialog } from '@angular/material/dialog';
 import { StorageService } from '@services/rest/storage/storage.service';
 import { StorageNode } from '@app/app.types';
 
+/* ACTIONS */
 import { CreateComponent } from './create/create.component';
 import { CreateFileComponent } from './create/create-file/create-file.component';
 import { CreateDirectoryComponent } from './create/create-directory/create-directory.component';
-import { CreateCancelledComponent } from './create/create-cancelled/create-cancelled.component';
-import { CreateResponseComponent } from './create/create-response/create-response.component';
-import { CreateErrorComponent } from './create/create-error/create-error.component';
-
-import { DetailsComponent } from './details/details.component';
-import { DetailsEditComponent } from './details/details-edit/details-edit.component';
-import { DetailsResponseComponent } from './details/details-response/details-response.component';
-import { DetailsErrorComponent } from './details/details-error/details-error.component';
-
 import { TransferComponent } from './transfer/transfer.component';
-import { TransferCancelledComponent } from './transfer/transfer-cancelled/transfer-cancelled.component';
-import { TransferResponseComponent } from './transfer/transfer-response/transfer-response.component';
-import { TransferErrorComponent } from './transfer/transfer-error/transfer-error.component';
-
+import { DetailsComponent } from './details/details.component';
 import { RemoveComponent } from './remove/remove.component';
-import { RemoveCancelledComponent } from './remove/remove-cancelled/remove-cancelled.component';
-import { RemoveResponseComponent } from './remove/remove-response/remove-response.component';
-import { RemoveErrorComponent } from './remove/remove-error/remove-error.component';
 
-export enum DialogMode {
-	USE,
+/* RESPONSES */
+import { SuccessComponent } from './success/success.component';
+import { ConflictComponent } from './conflict/conflict.component';
+import { FailureComponent } from './failure/failure.component';
+import { DeniedComponent } from './denied/denied.component';
+import { CancelComponent } from './cancel/cancel.component';
+
+export enum ActionMode {
+	OPEN,
 	CREATE,
-	DETAILS,
+	CREATEFILE,
+	CREATEDIRECTORY,
 	TRANSFER,
+	DETAILS,
 	REMOVE
-}
-
-interface DialogConfig {
-	[key: string]: {
-		dialogComponent: any,
-		dialogFunction: any
-	};
 }
 
 @Component({
@@ -51,10 +39,10 @@ interface DialogConfig {
 	styleUrls: ['./storage.component.scss'],
 })
 export class StorageComponent implements OnInit {
-	public treeControl = new NestedTreeControl<StorageNode>(node => node.childNodes);
+	public treeControl = new NestedTreeControl<StorageNode>(node => node.children);
 	public dataSource = new MatTreeNestedDataSource<StorageNode>();
 	public selectedNode: StorageNode | null = null;
-	public dialogMode = DialogMode;
+	public actionMode = ActionMode;
 
 	@Output() onTreeNodeSelect = new EventEmitter<any>();
 	@Output() nodeDropped = new EventEmitter<any>();
@@ -87,7 +75,7 @@ export class StorageComponent implements OnInit {
 			}
 		}
 
-		(event.target as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+		//(event.target as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
 	}
 
 	public onNodeDrag(event: CdkDragStart, node: StorageNode): void {
@@ -110,8 +98,8 @@ export class StorageComponent implements OnInit {
 		const dragMoveSubscription = event.source._dragRef.moved.subscribe((dragMoveEvent) => {
 			const movedRect = dragMoveEvent.pointerPosition!;
 			target.style.transform = clone.style.transform;
-			target.style.left = `${movedRect.x}px`;
-			target.style.top = `${movedRect.y}px`;
+			target.style.left = `${movedRect.x - 15}px`;
+			target.style.top = `${movedRect.y - 15}px`;
 		});
 
 		const dragEndSubscription = event.source._dragRef.ended.subscribe((dragMoveEvent) => {
@@ -158,157 +146,144 @@ export class StorageComponent implements OnInit {
 			return;
 		}
 
-		if (!destinationNode.isDirectory) {
+		if (destinationNode.children == null) {
 			return;
 		}
 
-		this.openDialog(this.dialogMode.TRANSFER, targetNode, destinationNode, null);
+		this.takeActionOnTheSelectedNode(this.actionMode.TRANSFER, targetNode, destinationNode);
 	}
 
-	public openDialog(mode: DialogMode, targetNode?: StorageNode | null, destinationNode?: StorageNode | null, response?: any): void {
-		let dialogConfig: DialogConfig | null = null;
-		let dialogStage: string = 'initial';
-
-		// Check if at least one of the nodes is present and is the same as the selected node or both of the nodes are present (no need for any to be selected) and mode is TRANSFER
-		if ((!targetNode || targetNode.id != this.selectedNode?.id) && (!destinationNode || destinationNode.id != this.selectedNode?.id) && (!targetNode || !destinationNode || mode != this.dialogMode.TRANSFER)) {
+	openDirectoryNode(targetNode: StorageNode) {
+		if (targetNode.children == null) {
 			return;
 		}
+		//TODO: link to back;
+		this.dataSource.data = [targetNode];
+	}
 
-		switch (mode) {
-			case this.dialogMode.USE:
-				dialogConfig = {
-					'initial': {
-						dialogComponent: null,
-						dialogFunction: null,
-					}
+	openFileNode(targetNode: StorageNode) {
+		if (targetNode.children != null) {
+			return;
+		}
+	}
+
+
+	takeActionOnTheSelectedNode(actionToBeTaken: ActionMode, targetNode: StorageNode, destinationNode?: StorageNode) {
+		//if (this.selectedNode?.children == null) {
+		//	return;
+		//}
+
+		let initialDialog: any = null;
+		let initialData: any = null;
+		let responseDialog: any = null;
+		let responseData: any = null;
+
+		switch (actionToBeTaken) {
+			case this.actionMode.OPEN:
+				if (targetNode.children) {
+					this.openDirectoryNode(targetNode);
+				} else {
+					this.openFileNode(targetNode);
+				}
+				return;
+			case this.actionMode.CREATE:
+				initialDialog = CreateComponent;
+				initialData = {
+					destinationNode: targetNode
 				};
 				break;
-			case this.dialogMode.CREATE:
-				dialogConfig = {
-					'initial': {
-						dialogComponent: CreateComponent,
-						dialogFunction: null,
-					},
-					'createFile': {
-						dialogComponent: CreateFileComponent,
-						dialogFunction: null,
-					},
-					'createDirectory': {
-						dialogComponent: CreateDirectoryComponent,
-						dialogFunction: null,
-					},
-					'cancelled': {
-						dialogComponent: CreateCancelledComponent,
-						dialogFunction: null,
-					},
-					'success': {
-						dialogComponent: CreateResponseComponent,
-						dialogFunction: null,
-					},
-					'error': {
-						dialogComponent: CreateErrorComponent,
-						dialogFunction: null,
-					}
+			case this.actionMode.CREATEFILE:
+				initialDialog = CreateFileComponent;
+				initialData = {
+					destinationNode: targetNode
 				};
 				break;
-			case this.dialogMode.DETAILS:
-				dialogConfig = {
-					'initial': {
-						dialogComponent: DetailsComponent,
-						dialogFunction: null,
-					},
-					'editNode': {
-						dialogComponent: DetailsEditComponent,
-						dialogFunction: null,
-					},
-					'success': {
-						dialogComponent: DetailsResponseComponent,
-						dialogFunction: null,
-					},
-					'error': {
-						dialogComponent: DetailsErrorComponent,
-						dialogFunction: null,
-					}
+			case this.actionMode.CREATEDIRECTORY:
+				initialDialog = CreateDirectoryComponent;
+				initialData = {
+					destinationNode: targetNode
 				};
 				break;
-			case this.dialogMode.TRANSFER:
-				dialogConfig = {
-					'initial': {
-						dialogComponent: TransferComponent,
-						dialogFunction: null,
-					},
-					'cancelled': {
-						dialogComponent: TransferCancelledComponent,
-						dialogFunction: null,
-					},
-					'success': {
-						dialogComponent: TransferResponseComponent,
-						dialogFunction: null,
-					},
-					'error': {
-						dialogComponent: TransferErrorComponent,
-						dialogFunction: null,
-					}
+			case this.actionMode.TRANSFER:
+				initialDialog = TransferComponent;
+				initialData = {
+					targetNode: targetNode,
+					destinationNode: destinationNode
 				};
 				break;
-			case this.dialogMode.REMOVE:
-				dialogConfig = {
-					'initial': {
-						dialogComponent: RemoveComponent,
-						dialogFunction: null,
-					},
-					'cancelled': {
-						dialogComponent: RemoveCancelledComponent,
-						dialogFunction: null,
-					},
-					'success': {
-						dialogComponent: RemoveResponseComponent,
-						dialogFunction: null,
-					},
-					'error': {
-						dialogComponent: RemoveErrorComponent,
-						dialogFunction: null,
-					}
+			case this.actionMode.DETAILS:
+				initialDialog = DetailsComponent;
+				initialData = {
+					targetNode: targetNode
+				};
+				break;
+			case this.actionMode.REMOVE:
+				initialDialog = RemoveComponent;
+				initialData = {
+					targetNode: targetNode
 				};
 				break;
 			default:
 				return;
 		}
 
-		this.openDialogsRecursive(dialogConfig, dialogStage, targetNode, destinationNode, response);
-	}
-
-	private openDialogsRecursive(dialogConfig: DialogConfig, dialogStage: string, targetNode?: StorageNode | null, destinationNode?: StorageNode | null, response?: any): void {
-		if (!dialogConfig || !dialogConfig[dialogStage] || (!targetNode && !destinationNode && !response)) {
-			return;
-		}
-
-		const dialogRef = this.dialog.open(dialogConfig[dialogStage].dialogComponent, {
+		const dialogRef = this.dialog.open(initialDialog, {
 			enterAnimationDuration: '300ms',
 			exitAnimationDuration: '150ms',
-			closeOnNavigation: false,
-			disableClose: true,
-			data: {
-				targetNode,
-				destinationNode,
-				response
-			},
+			closeOnNavigation: true,
+			disableClose: false,
+			data: initialData,
 		});
 
 		if (dialogRef.componentInstance && (dialogRef.componentInstance as any).responseEmitter) {
 			(dialogRef.componentInstance as any).responseEmitter.subscribe((response: any) => {
 				dialogRef.afterClosed().subscribe(dialogExitCode => {
-					this.openDialogsRecursive(dialogConfig, dialogExitCode, targetNode, destinationNode, response);
+					switch (dialogExitCode) {
+						case 'success': {
+							responseDialog = SuccessComponent;
+							responseData = {
+								successMessage: "Directory created successfully",
+								successNode: response.response,
+							}
+							break;
+						}
+						case 'conflict': {
+							responseDialog = ConflictComponent;
+							responseData = {
+								response
+							}
+							break;
+						}
+						case 'failure': {
+							responseDialog = FailureComponent;
+							responseData = {
+								failureMessage: response.error.error.message,
+								failureStatus: response.error.status
+							}
+							break;
+						}
+						case 'denied': {
+							responseDialog = DeniedComponent;
+							responseData = {
+								failureMessage: response.error.error.message,
+								failureStatus: response.error.status
+							}
+							break;
+						}
+						case 'cancel': {
+							responseDialog = CancelComponent;
+							responseData = {
+								cancelMessage: response.message
+							}
+							break;
+						}
+						default: {
+							//statements;
+							break;
+						}
+					}
 				});
 			});
-		} else {
-			dialogRef.afterClosed().subscribe(dialogExitCode => {
-				this.openDialogsRecursive(dialogConfig, dialogExitCode, targetNode, destinationNode, response);
-			});
-		}
-
-		if (dialogConfig[dialogStage].dialogFunction != null) {
-			dialogConfig[dialogStage].dialogFunction();
 		}
 	}
 
@@ -320,5 +295,5 @@ export class StorageComponent implements OnInit {
 	}
 
 	hasChild = (_: number, node: StorageNode) =>
-		node.childNodes && node.childNodes.length > 0 || node.isDirectory
+		node.children && node.children.length > 0 || node.children != null
 }

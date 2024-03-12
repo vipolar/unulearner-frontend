@@ -21,13 +21,13 @@ export interface Dictionary {
 
 export interface StorageNode {
 	id: string;
-	url: string;
-	name: string;
 	created: string;
 	updated: string;
+	onDiskURL: string;
+	onDiskName: string;
 	description: string;
-	isDirectory: boolean;
-	childNodes: StorageNode[];
+	isAccessible: boolean;
+	children: StorageNode[] | null;
 }
 
 /* Spring boot pageable response and its components */

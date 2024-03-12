@@ -1,0 +1,21 @@
+.mat-dialog-progress-bar {
+    width: 100%;
+}
+
+.mat-dialog-content-form {
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 0px;
+    display: flex;
+
+    .mat-dialog-content-form-field {
+        margin-bottom: 20px;
+        display: block;
+        width: 100%;
+
+        .mat-dialog-content-form-field-hint{
+            max-width: 100%;
+        }
+    }
+}
