@@ -8,10 +8,15 @@ import { Observable } from 'rxjs';
 export class StorageService {
 
 	private apiUrl = 'https://unulearner.com/backend/storage';
+	constructor(private httpClient: HttpClient) { };
 
-	constructor(private httpClient: HttpClient) { }
+	//**********************************************************//
+    //*                                                        *//
+    //*   From here on, it be all about THEM single files!     *//
+    //*                                                        *//
+    //**********************************************************//
 
-	/* FILES */
+	//TODO:!!!
 	addFileToById(formData: any, destinationId: string): Observable<HttpEvent<any>> {
 		return this.httpClient.post<HttpEvent<any>>(`${this.apiUrl}/file/add/to/${destinationId}`, formData, {
 			reportProgress: true,
@@ -20,6 +25,7 @@ export class StorageService {
 		});
 	}
 
+	//TODO:!!!
 	updateFileById(targetId: string, formData: any): Observable<any> {
 		return this.httpClient.post(`${this.apiUrl}/file/update/${targetId}`, formData, {
 			reportProgress: false,
@@ -28,35 +34,44 @@ export class StorageService {
 		});
 	}
 
-	copyFileByIdToById(targetId: string, destinationId: string, conflictOption: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/file/copy/${targetId}/to/${destinationId}?conflict=${conflictOption}`, null, {
+	copyFileByIdToById(targetId: string, destinationId: string): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/copy/file/${targetId}/to/${destinationId}`, null, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
 		});
 	}
 
-	moveFileByIdToById(targetId: string, destinationId: string, conflictOption: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/file/move/${targetId}/to/${destinationId}?conflict=${conflictOption}`, null, {
+	moveFileByIdToById(targetId: string, destinationId: string): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/move/file/${targetId}/to/${destinationId}`, null, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
 		});
 	}
 
-	downloadFileById(targetId: string): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/file/download/${targetId}`);
+	downloadFileById(targetId: string): Observable<HttpEvent<any>> {
+		return this.httpClient.get((`${this.apiUrl}/download/file/${targetId}`), {
+			reportProgress: true,
+			responseType: 'json',
+			observe: 'events'
+		});
 	}
 
 	deleteFileById(targetId: string): Observable<any> {
-		return this.httpClient.delete(`${this.apiUrl}/file/delete/${targetId}`, {
+		return this.httpClient.delete(`${this.apiUrl}/delete/file/${targetId}`, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
 		});
 	}
 
-	/* DIRECTORIES */
+	//*********************************************************//
+    //*                                                       *//
+    //*   From here on, it be all about THEM directories!     *//
+    //*                                                       *//
+    //*********************************************************//
+	//TODO: !!!
 	addDirectoryToById(formData: any, destinationId: string): Observable<any> {
 		return this.httpClient.post(`${this.apiUrl}/directory/add/to/${destinationId}`, formData, {
 			reportProgress: false,
@@ -65,6 +80,7 @@ export class StorageService {
 		});
 	}
 
+	//TODO: !!!
 	updateDirectoryById(targetId: string, formData: any): Observable<any> {
 		return this.httpClient.post(`${this.apiUrl}/directory/edit/${targetId}`, formData, {
 			reportProgress: false,
@@ -73,16 +89,16 @@ export class StorageService {
 		});
 	}
 
-	copyDirectoryByIdToById(targetId: string, destinationId: string, conflictOption: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/directory/copy/${targetId}/to/${destinationId}?conflict=${conflictOption}`, null, {
+	copyDirectoryByIdToById(targetId: string, destinationId: string): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/copy/directory/${targetId}/to/${destinationId}`, null, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
 		});
 	}
 
-	moveDirectoryByIdToById(targetId: string, destinationId: string, conflictOption: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/directory/move/${targetId}/to/${destinationId}?conflict=${conflictOption}`, null, {
+	moveDirectoryByIdToById(targetId: string, destinationId: string): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/move/directory/${targetId}/to/${destinationId}`, null, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
@@ -90,7 +106,7 @@ export class StorageService {
 	}
 
 	downloadDirectoryById(targetId: string): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/directory/download/${targetId}`, {
+		return this.httpClient.get(`${this.apiUrl}/download/directory/${targetId}`, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
@@ -98,18 +114,49 @@ export class StorageService {
 	}
 
 	deleteDirectoryById(targetId: string): Observable<any> {
-		return this.httpClient.delete(`${this.apiUrl}/directory/delete/${targetId}`, {
+		return this.httpClient.delete(`${this.apiUrl}/delete/directory/${targetId}`, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
 		});
 	}
 
-	/* THE REST */
+    //***************************************************//
+    //*                                                 *//
+    //*   From here on, it be all about THEM tasks!     *//
+    //*                                                 *//
+    //***************************************************//
+
+	//TODO: arguments
+	executeTaskById(targetId: string): Observable<any> {
+		return this.httpClient.get(`${this.apiUrl}/execute/task/${targetId}`, {
+			reportProgress: false,
+			responseType: 'json',
+			observe: 'response'
+		});
+	}
+
+	cancelTaskById(targetId: string): Observable<any> {
+		return this.httpClient.get(`${this.apiUrl}/cancel/task/${targetId}`, {
+			reportProgress: false,
+			responseType: 'json',
+			observe: 'response'
+		});
+	}
+
+
+    //***************************************************//
+    //*                                                 *//
+    //*   From here on, it be all about THEM rests!     *//
+    //*                                                 *//
+    //***************************************************//
+
+	//TODO: !!!
 	getRootDirectory(): Observable<any> {
 		return this.httpClient.get(`${this.apiUrl}/root/download`);
 	}
 
+	//TODO: !!!
 	getFileLinkById(targetId: string): string {
 		return `${this.apiUrl}/file/get/${targetId}`;
 	}

@@ -22,8 +22,8 @@
 	</mat-tab-group>
 </div>
 <div mat-dialog-actions>
-	<button type="button" mat-button (click)="copyNode()">Copy {{targetNode.children != null ? 'directory' : 'file'}}</button>
-	<button type="button" mat-button (click)="moveNode()">Move {{targetNode.children != null ? 'directory' : 'file'}}</button>
+	<button type="button" mat-button (click)="transferNode(true)">Copy {{targetNode.children != null ? 'directory' : 'file'}}</button>
+	<button type="button" mat-button (click)="transferNode(false)">Move {{targetNode.children != null ? 'directory' : 'file'}}</button>
 	<button type="button" mat-button [mat-dialog-close]="true" cdkFocusInitial>Ok</button>
 	<mat-form-field appearance="outline">
 		<mat-label>In case of conflict:</mat-label>

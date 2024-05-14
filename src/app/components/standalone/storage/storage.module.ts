@@ -17,11 +17,12 @@ import { MatIconModule } from '@angular/material/icon';
 
 // The storage tree and its CRUD
 import { StorageComponent } from './storage.component';
+//import { ExecuteComponent } from './execute/execute.component';
 
 
 @NgModule({
 	declarations: [
-		StorageComponent
+		StorageComponent,
 	],
 	imports: [
 		CommonModule,

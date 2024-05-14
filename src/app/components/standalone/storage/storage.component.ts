@@ -15,6 +15,7 @@ import { CreateDirectoryComponent } from './create/create-directory/create-direc
 import { TransferComponent } from './transfer/transfer.component';
 import { DetailsComponent } from './details/details.component';
 import { RemoveComponent } from './remove/remove.component';
+import { ExecuteComponent } from './execute/execute.component';
 
 /* RESPONSES */
 import { SuccessComponent } from './success/success.component';
@@ -169,14 +170,8 @@ export class StorageComponent implements OnInit {
 
 
 	takeActionOnTheSelectedNode(actionToBeTaken: ActionMode, targetNode: StorageNode, destinationNode?: StorageNode) {
-		//if (this.selectedNode?.children == null) {
-		//	return;
-		//}
-
-		let initialDialog: any = null;
-		let initialData: any = null;
-		let responseDialog: any = null;
-		let responseData: any = null;
+		let dialogComponent: any = null;
+		let dialogData: any = null;
 
 		switch (actionToBeTaken) {
 			case this.actionMode.OPEN:
@@ -187,39 +182,39 @@ export class StorageComponent implements OnInit {
 				}
 				return;
 			case this.actionMode.CREATE:
-				initialDialog = CreateComponent;
-				initialData = {
+				dialogComponent = CreateComponent;
+				dialogData = {
 					destinationNode: targetNode
 				};
 				break;
 			case this.actionMode.CREATEFILE:
-				initialDialog = CreateFileComponent;
-				initialData = {
+				dialogComponent = CreateFileComponent;
+				dialogData = {
 					destinationNode: targetNode
 				};
 				break;
 			case this.actionMode.CREATEDIRECTORY:
-				initialDialog = CreateDirectoryComponent;
-				initialData = {
+				dialogComponent = CreateDirectoryComponent;
+				dialogData = {
 					destinationNode: targetNode
 				};
 				break;
 			case this.actionMode.TRANSFER:
-				initialDialog = TransferComponent;
-				initialData = {
+				dialogComponent = TransferComponent;
+				dialogData = {
 					targetNode: targetNode,
 					destinationNode: destinationNode
 				};
 				break;
 			case this.actionMode.DETAILS:
-				initialDialog = DetailsComponent;
-				initialData = {
+				dialogComponent = DetailsComponent;
+				dialogData = {
 					targetNode: targetNode
 				};
 				break;
 			case this.actionMode.REMOVE:
-				initialDialog = RemoveComponent;
-				initialData = {
+				dialogComponent = RemoveComponent;
+				dialogData = {
 					targetNode: targetNode
 				};
 				break;
@@ -227,12 +222,12 @@ export class StorageComponent implements OnInit {
 				return;
 		}
 
-		const dialogRef = this.dialog.open(initialDialog, {
+		const dialogRef = this.dialog.open(dialogComponent, {
 			enterAnimationDuration: '300ms',
 			exitAnimationDuration: '150ms',
 			closeOnNavigation: true,
 			disableClose: false,
-			data: initialData,
+			data: dialogData,
 		});
 
 		if (dialogRef.componentInstance && (dialogRef.componentInstance as any).responseEmitter) {
@@ -240,41 +235,13 @@ export class StorageComponent implements OnInit {
 				dialogRef.afterClosed().subscribe(dialogExitCode => {
 					switch (dialogExitCode) {
 						case 'success': {
-							responseDialog = SuccessComponent;
-							responseData = {
-								successMessage: "Directory created successfully",
-								successNode: response.response,
-							}
-							break;
-						}
-						case 'conflict': {
-							responseDialog = ConflictComponent;
-							responseData = {
-								response
-							}
+							dialogComponent = ExecuteComponent;
+							dialogData = response.response;
 							break;
 						}
 						case 'failure': {
-							responseDialog = FailureComponent;
-							responseData = {
-								failureMessage: response.error.error.message,
-								failureStatus: response.error.status
-							}
-							break;
-						}
-						case 'denied': {
-							responseDialog = DeniedComponent;
-							responseData = {
-								failureMessage: response.error.error.message,
-								failureStatus: response.error.status
-							}
-							break;
-						}
-						case 'cancel': {
-							responseDialog = CancelComponent;
-							responseData = {
-								cancelMessage: response.message
-							}
+							dialogComponent = FailureComponent;
+							dialogData = response.error;
 							break;
 						}
 						default: {
@@ -282,6 +249,14 @@ export class StorageComponent implements OnInit {
 							break;
 						}
 					}
+
+					this.dialog.open(dialogComponent, {
+						enterAnimationDuration: '300ms',
+						exitAnimationDuration: '150ms',
+						closeOnNavigation: true,
+						disableClose: false,
+						data: dialogData,
+					});
 				});
 			});
 		}

@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { HttpResponse } from '@angular/common/http';
+import { Observable, lastValueFrom } from 'rxjs';
 
 import { StorageService } from '@services/rest/storage/storage.service';
 import { StorageNode } from '@app/app.types';
@@ -41,68 +42,58 @@ export class TransferComponent implements OnInit {
 	public formSubmissionSubscription: any = undefined;
 	public formSubmissionResponse: any = undefined;
 
+	public targetNode: StorageNode = this.data.targetNode;
 	public formattedTargetDateCreated: string | null = null;
 	public formattedTargetDateUpdated: string | null = null;
 
+	public destinationNode: StorageNode = this.data.destinationNode;
 	public formattedDestinationDateCreated: string | null = null;
 	public formattedDestinationDateUpdated: string | null = null;
 
 	public inCaseOfConflict: string = 'ignore';
-	public targetNode: StorageNode = this.data.targetNode;
-	public destinationNode: StorageNode = this.data.destinationNode;
+	
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		public dialogRef: MatDialogRef<TransferComponent>,
 		private storageService: StorageService
 	) { }
 
-	public copyNode() {
+	public async transferNode(preserveOriginal: boolean) {
 		// Delay the activation of the Cancel button (UX things...)
 		setTimeout(() => { this.formSubmissionSubscriptionCancellable = true }, 500);
+		let storageServiceObservable: Observable<any> | null = null;
+		let storageServiceResponse: HttpResponse<any> | null = null;
 
-		const storageServiceObservable = this.targetNode.children != null ? this.storageService.copyDirectoryByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict) : this.storageService.copyFileByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict);
-		this.formSubmissionSubscription = storageServiceObservable
-			.subscribe({
-				next: (response: HttpResponse<any>) => {
-					console.log(response);
-					this.formSubmissionSubscriptionCancellable = false;
-					this.formSubmissionResponse = response;
+		if (this.targetNode.children != null) {
+			if (preserveOriginal == true) {
+				storageServiceObservable = this.storageService.copyDirectoryByIdToById(this.targetNode.id, this.destinationNode.id);
+			} else {
+				storageServiceObservable = this.storageService.moveDirectoryByIdToById(this.targetNode.id, this.destinationNode.id);
+			}
+		} else {
+			if (preserveOriginal == true) {
+				storageServiceObservable = this.storageService.copyFileByIdToById(this.targetNode.id, this.destinationNode.id);
+			} else {
+				storageServiceObservable = this.storageService.moveFileByIdToById(this.targetNode.id, this.destinationNode.id);
+			}
+		}
 
-					this.responseEmitter.emit({ response });
-					this.dialogRef.close('success');
-				},
-				error: (error: any) => {
-					this.formSubmissionSubscriptionCancellable = false;
-					this.formSubmissionResponse = error;
+		this.formSubmissionSubscription = storageServiceObservable.subscribe({
+			next: (response: HttpResponse<any>) => {
+				this.formSubmissionSubscriptionCancellable = false;
+				this.formSubmissionResponse = response;
 
-					this.responseEmitter.emit({ error });
-					this.dialogRef.close('error');
-				}
-			});
-	}
+				this.responseEmitter.emit({ response });
+				this.dialogRef.close('success');
+			},
+			error: (error: any) => {
+				this.formSubmissionSubscriptionCancellable = false;
+				this.formSubmissionResponse = error;
 
-	public moveNode() {
-		// Delay the activation of the Cancel button (UX things...)
-		setTimeout(() => { this.formSubmissionSubscriptionCancellable = true }, 500);
-
-		const storageServiceObservable = this.targetNode.children != null ? this.storageService.moveDirectoryByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict) : this.storageService.moveFileByIdToById(this.targetNode.id, this.destinationNode.id, this.inCaseOfConflict);
-		this.formSubmissionSubscription = storageServiceObservable
-			.subscribe({
-				next: (response: HttpResponse<any>) => {
-					this.formSubmissionSubscriptionCancellable = false;
-					this.formSubmissionResponse = response;
-
-					this.responseEmitter.emit({ response });
-					this.dialogRef.close('success');
-				},
-				error: (error: any) => {
-					this.formSubmissionSubscriptionCancellable = false;
-					this.formSubmissionResponse = error;
-
-					this.responseEmitter.emit({ error });
-					this.dialogRef.close('error');
-				}
-			});
+				this.responseEmitter.emit({ error });
+				this.dialogRef.close('failure');
+			}
+		});
 	}
 
 	public cancelSubscription(): void {
