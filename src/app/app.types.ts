@@ -1,11 +1,5 @@
 import { FormControl, FormGroup } from "@angular/forms";
 
-export type ControlsOf<T extends Record<string, any>> = {
-	[K in keyof T]: T[K] extends Record<any, any>
-	? FormGroup<ControlsOf<T[K]>>
-	: FormControl<T[K]>;
-};
-
 export interface Word {
 	id: number | null;
 	word: string;
@@ -19,6 +13,7 @@ export interface Dictionary {
 	context: string
 }
 
+/* Storage interfaces */
 export interface StorageNode {
 	id: string;
 	created: string;
@@ -27,38 +22,69 @@ export interface StorageNode {
 	onDiskName: string;
 	description: string;
 	isAccessible: boolean;
+	_lastSelected?: boolean;
 	children: StorageNode[] | null;
+}
+
+export interface StorageTask {
+	taskID: string;
+	taskState: string;
+	options: ExceptionOption[] | null;
+	action: {
+		message: string;
+		timeLeft: number;
+		attemptCounter: number;
+		actionHeader: string | null;
+		exceptionType: string | null;
+		exceptionMessage: string | null;
+		newStorageNode?: StorageNode | null;
+		targetStorageNode?: StorageNode | null;
+		conflictStorageNode?: StorageNode | null;
+		destinationStorageNode?: StorageNode | null;
+	};
+}
+
+export interface ExceptionOption {
+	value: string;
+	displayText: string;
+	isPersistable: boolean;
 }
 
 /* Spring boot pageable response and its components */
 export interface PageableResponse<T> {
+	numberOfElements: number;
+	totalElements: number;
 	content: T[] | null;
 	pageable: Pageable;
 	totalPages: number;
-	totalElements: number;
-	last: boolean;
-	size: number;
 	number: number;
-	sort: Sort;
-	numberOfElements: number;
 	first: boolean;
 	empty: boolean;
+	last: boolean;
+	size: number;
+	sort: Sort;
 }
 
 export interface Pageable {
 	pageNumber: number;
-	pageSize: number;
-	sort: Sort;
-	offset: number;
-	paged: boolean;
 	unpaged: boolean;
+	pageSize: number;
+	paged: boolean;
+	offset: number;
+	sort: Sort;
 }
 
 export interface Sort {
-	empty: boolean;
 	unsorted: boolean;
 	sorted: boolean;
+	empty: boolean;
 }
 
 /* Useful stuff */
 export let urlRegEx: string = '[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}(.[a-z]{2,4})?\b(/[-a-zA-Z0-9@:%_+.~#?&//=]*)?';
+
+export type ControlsOf<T extends Record<string, any>> = {
+	[K in keyof T]: T[K] extends Record<any, any>
+	? FormGroup<ControlsOf<T[K]>>
+	: FormControl<T[K]>;
+};

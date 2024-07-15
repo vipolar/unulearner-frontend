@@ -18,7 +18,7 @@ import { ImportComponent } from './import/import.component';
 import { UpdateComponent } from './update/update.component';
 import { EnglishComponent } from './english.component';
 
-import { StorageModule } from '@components/standalone/storage/storage.module';
+import { StorageModule } from '@components/storage/storage.module';
 
 const routes: Routes = [
 	{ path: 'create', component: CreateComponent },

@@ -1,0 +1,67 @@
+<!--
+(opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"
+Currently I am {{panelOpenState() ? 'open' : 'closed'}}
+
+<p>{{storageTask.action.attemptCounter}}</p>
+<p>{{storageTask.action.exceptionMessage}}</p>
+<p>{{storageTask.action.exceptionType}}</p>
+<p>{{storageTask.action.timeLeft}}</p>
+<p>{{storageTask.action.message}}</p>
+
+-->
+
+<h1 mat-dialog-title>{{storageTask.action.actionHeader}}</h1>
+<div mat-dialog-content>
+    <p>TSsss</p>
+
+    <mat-accordion>
+        <mat-expansion-panel [expanded]="storageTask.action.exceptionType == null" cdkFocusInitial>
+            <mat-expansion-panel-header>
+                <mat-panel-title>Log</mat-panel-title>
+                <mat-panel-description>
+                    {{storageTaskLog.length}} {{storageTaskLog.length == 1 ? "entry" : "entries"}} 
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ul class="expansion-panel-log-window">
+                <li *ngFor="let logEntry of storageTaskLog">{{logEntry}}</li>
+            </ul>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <mat-accordion *ngIf="storageTask.action.exceptionType != null">
+        <mat-expansion-panel [expanded]="storageTask.action.exceptionType != null">
+            <mat-expansion-panel-header>
+                <mat-panel-title>Exception</mat-panel-title>
+                <mat-panel-description>
+                    {{storageTask.action.exceptionType}}
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <p>{{storageTask.action.exceptionMessage}}</p>
+            <mat-accordion>
+                <standalone-storage-node title="New"
+                    *ngIf="storageTask.action.newStorageNode"
+                    [node]="storageTask.action.newStorageNode">
+                </standalone-storage-node>
+                <standalone-storage-node title="Target"
+                    *ngIf="storageTask.action.targetStorageNode"
+                    [node]="storageTask.action.targetStorageNode">
+                </standalone-storage-node>
+                <standalone-storage-node title="Conflict"
+                    *ngIf="storageTask.action.conflictStorageNode"
+                    [node]="storageTask.action.conflictStorageNode">
+                </standalone-storage-node>
+                <standalone-storage-node title="Destination"
+                    *ngIf="storageTask.action.destinationStorageNode"
+                    [node]="storageTask.action.destinationStorageNode">
+                </standalone-storage-node>
+            </mat-accordion>
+            <button type="button" mat-stroked-button color="primary" *ngFor="let option of storageTask.options">{{option.displayText}}</button>
+        </mat-expansion-panel>
+    </mat-accordion>        
+</div>
+
+<div mat-dialog-actions class="mat-dialog-actions">
+    <button type="button" mat-stroked-button color="primary" [mat-dialog-close]="true" [disabled]="storageTask.taskState !== 'completed' && storageTask.taskState !== 'cancelled'">Ok</button>
+    <button type="button" mat-stroked-button color="primary" [mat-dialog-close]="true" [disabled]="storageTask.taskState !== 'exception'">Retry</button>
+    <button type="button" mat-raised-button color="primary" (click)="cancelTaskExecution = true">Cancel</button>
+</div>

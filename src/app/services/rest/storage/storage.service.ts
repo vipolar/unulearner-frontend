@@ -18,7 +18,7 @@ export class StorageService {
 
 	//TODO:!!!
 	addFileToById(formData: any, destinationId: string): Observable<HttpEvent<any>> {
-		return this.httpClient.post<HttpEvent<any>>(`${this.apiUrl}/file/add/to/${destinationId}`, formData, {
+		return this.httpClient.post<HttpEvent<any>>(`${this.apiUrl}/upload/file/to/${destinationId}`, formData, {
 			reportProgress: true,
 			responseType: 'json',
 			observe: 'events'
@@ -73,7 +73,7 @@ export class StorageService {
     //*********************************************************//
 	//TODO: !!!
 	addDirectoryToById(formData: any, destinationId: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/directory/add/to/${destinationId}`, formData, {
+		return this.httpClient.post(`${this.apiUrl}/create/directory/in/${destinationId}`, formData, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
@@ -159,5 +159,14 @@ export class StorageService {
 	//TODO: !!!
 	getFileLinkById(targetId: string): string {
 		return `${this.apiUrl}/file/get/${targetId}`;
+	}
+
+	//TODO: !!!
+	createShortcutByIdToById(targetId: string, destinationId: string): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/link/file/${targetId}/to/${destinationId}`, null, {
+			reportProgress: false,
+			responseType: 'json',
+			observe: 'response'
+		});
 	}
 }

@@ -1,0 +1,77 @@
+<div class="container">
+	<section class="storage">
+		<mat-tree id="storage-tree" class="storage-tree" [dataSource]="dataSource" [treeControl]="treeControl">
+			<!-- This is the tree node template for non-expandable nodes | cdkDragPreview cdkDragHandle cdkDragBoundary="#storage-tree"-->
+			<mat-tree-node class="storage-tree-node" *matTreeNodeDef="let node" cdkDrag (cdkDragStarted)="onNodeDrag($event, node)" (nodeDropped)="onNodeDrop($event, node)">
+				<button class="storage-tree-node-button" mat-button [ngClass]="{'selected': targetNode?.id == node.id}" matTooltip="{{node.onDiskName}}" color="warn" [attr.aria-label]="'Select {{node.onDiskName}}'"
+					(mousedown)="onNodeTouch($event, node)" (touchstart)="onNodeTouch($event, node)" (mouseup)="onNodeRelease($event, node)" (touchend)="onNodeRelease($event, node)">
+					<mat-icon class="storage-tree-node-button-icon">
+						{{'check'}}
+					</mat-icon>
+					<span class="storage-tree-node-button-label">{{node.onDiskName}}</span>
+				</button>
+				<span class="storage-tree-node-options" [ngClass]="{'hidden': targetNode?.id != node.id}">
+					<button class="storage-tree-node-options-button" mat-button color="warn" (click)="$event.stopPropagation()" matTooltip="{{node.onDiskName}} options"
+						[matMenuTriggerFor]="storageNodeMenu" [matMenuTriggerData]="{targetNode: node}" aria-label="Options">
+						<mat-icon class="storage-tree-node-options-button-icon">{{'more_vert'}}</mat-icon>
+					</button>
+				</span>
+			</mat-tree-node>
+			<!-- This is the tree node template for expandable nodes -->
+			<mat-nested-tree-node class="storage-tree-node" *matTreeNodeDef="let node; when: hasChild" cdkDrag (cdkDragStarted)="onNodeDrag($event, node)" (nodeDropped)="onNodeDrop($event, node)">
+				<button class="storage-tree-node-button" mat-button [ngClass]="{'selected': targetNode?.id == node.id}" matTooltip="{{node.onDiskName}}" color="warn" [attr.aria-label]="'Select {{node.onDiskName}}'"
+					(mousedown)="onNodeTouch($event, node)" (touchstart)="onNodeTouch($event, node)" (mouseup)="onNodeRelease($event, node)" (touchend)="onNodeRelease($event, node)">
+					<mat-icon class="storage-tree-node-button-icon">
+						{{treeControl.isExpanded(node) ? 'folder_open' : 'folder'}}
+					</mat-icon>
+					<span class="storage-tree-node-button-label">{{node.onDiskName}}</span>
+				</button>
+				<span class="storage-tree-node-options" [ngClass]="{'hidden': targetNode?.id != node.id}">
+					<button class="storage-tree-node-options-button" mat-button color="warn" (click)="$event.stopPropagation()" matTooltip="{{node.onDiskName}} options"
+						[matMenuTriggerFor]="storageNodeMenu" [matMenuTriggerData]="{targetNode: node}" aria-label="Options">
+						<mat-icon class="storage-tree-node-options-button-icon">{{'more_vert'}}</mat-icon>
+					</button>
+				</span>
+				<!-- And these are the children -->
+				<div class="storage-tree-node-children" role="group"
+					[ngClass]="{'hidden': !treeControl.isExpanded(node)}">
+					<ng-container matTreeNodeOutlet></ng-container>
+				</div>
+			</mat-nested-tree-node>
+		</mat-tree>
+	</section>
+
+	<mat-menu class="storage-options" #storageNodeMenu="matMenu" xPosition="after" yPosition="below">
+		<ng-template matMenuContent>
+			<button class="storage-options-button" mat-menu-item (click)="takeActionOnTheSelectedNode(actionMode.OPEN)">
+				<mat-icon class="storage-options-button-icon">{{targetNode?.children ? 'drive_file_move_outline' : 'file_open'}}</mat-icon>
+				<span class="storage-options-button-label">Open</span>
+			</button>
+			<button class="storage-options-button" mat-menu-item [matMenuTriggerFor]="storageNodeCreateMenu" [matMenuTriggerData]="{targetNode}" [disabled]="targetNode?.children == null">
+				<mat-icon class="storage-options-button-icon">{{'drive_folder_upload'}}</mat-icon>
+				<span class="storage-options-button-label">Create</span>
+			</button>
+			<button class="storage-options-button" mat-menu-item (click)="takeActionOnTheSelectedNode(actionMode.DETAILS)">
+				<mat-icon class="storage-options-button-icon">{{'mode_edit_outline'}}</mat-icon>
+				<span class="storage-options-button-label">Details</span>
+			</button>
+			<button class="storage-options-button" mat-menu-item (click)="takeActionOnTheSelectedNode(actionMode.REMOVE)">
+				<mat-icon class="storage-options-button-icon">{{'delete'}}</mat-icon>
+				<span class="storage-options-button-label">Remove</span>
+			</button>
+		</ng-template>
+	</mat-menu>
+
+	<mat-menu class="storage-options" #storageNodeCreateMenu="matMenu" xPosition="after" yPosition="below">
+		<ng-template matMenuContent>
+			<button class="storage-options-button" mat-menu-item (click)="takeActionOnTheSelectedNode(actionMode.CREATEFILE)">
+				<mat-icon class="storage-options-button-icon">{{'note_add'}}</mat-icon>
+				<span class="storage-options-button-label">Upload new file</span>
+			</button>
+			<button class="storage-options-button" mat-menu-item (click)="takeActionOnTheSelectedNode(actionMode.CREATEDIRECTORY)">
+				<mat-icon class="storage-options-button-icon">{{'create_new_folder'}}</mat-icon>
+				<span class="storage-options-button-label">Create new folder</span>
+			</button>
+		</ng-template>
+	</mat-menu>
+</div>

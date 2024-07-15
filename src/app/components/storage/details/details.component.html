@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>Edit {{targetNode.children != null ? 'directory' : 'file'}}</h1>
+<div mat-dialog-content>
+	<h4>Are you sure you want to edit <b>'{{targetNode.onDiskName}}'</b> {{targetNode.children != null ? 'and all data within it' : ''}} permanently?</h4><br>
+	<!--mat-tab-group class="create-form-tab-group" (selectedTabChange)="createFormTabChanged($event)">
+		<mat-tab label="Name">
+			<storage-create-file (formDataChange)="updateFileFormData($event)"></storage-create-file>
+		</mat-tab>
+		<mat-tab label="Description">
+			<storage-create-directory (formDataChange)="updateDirectoryFormData($event)"></storage-create-directory>
+		</mat-tab>
+		<mat-tab label="Permissions">
+			<storage-create-directory (formDataChange)="updateDirectoryFormData($event)"></storage-create-directory>
+		</mat-tab>
+		<mat-tab label="Owner">
+			<storage-create-directory (formDataChange)="updateDirectoryFormData($event)"></storage-create-directory>
+		</mat-tab>
+	</mat-tab-group-->
+	<mat-accordion>
+		<standalone-storage-node cdkFocusInitial
+			title="Target"
+			[expand]="true"
+			*ngIf="targetNode"
+			[node]="targetNode">
+		</standalone-storage-node>
+	</mat-accordion>
+</div>
+<div mat-dialog-actions class="mat-dialog-actions">
+	<button mat-stroked-button color="primary" (click)="editNode()">Edit {{targetNode.children != null ? 'directory' : 'file'}}</button>
+	<button mat-raised-button color="primary" [mat-dialog-close]="false">Cancel</button>
+</div>

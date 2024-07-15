@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Remove {{targetNode.children != null ? 'directory' : 'file'}}</h1>
+<div mat-dialog-content>
+	<h4>Are you sure you want to remove <b>'{{targetNode.onDiskName}}'</b> {{targetNode.children != null ? 'and all data within it' : ''}} permanently?</h4><br>
+	<mat-accordion>
+		<standalone-storage-node cdkFocusInitial
+			title="Target"
+			[expand]="true"
+			*ngIf="targetNode"
+			[node]="targetNode">
+		</standalone-storage-node>
+	</mat-accordion>
+</div>
+<div mat-dialog-actions class="mat-dialog-actions">
+	<button mat-stroked-button color="primary" (click)="removeNode()">Remove {{targetNode.children != null ? 'directory' : 'file'}}</button>
+	<button mat-raised-button color="primary" [mat-dialog-close]="false">Cancel</button>
+</div>

@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Transfer {{targetNode.children != null ? 'directory' : 'file'}}</h1>
+<div mat-dialog-content>
+	<h4>Would you like to transfer <b>'{{targetNode.onDiskName}}'</b> {{targetNode.children != null ? 'and all data within it' : ''}} to another location permanently or create a shortcut to it?</h4><br>
+	<mat-accordion>
+		<standalone-storage-node cdkFocusInitial
+			title="Target"
+			[expand]="true"
+			*ngIf="targetNode"
+			[node]="targetNode">
+		</standalone-storage-node>
+		<standalone-storage-node
+			title="Destination"
+			*ngIf="destinationNode"
+			[node]="destinationNode">
+		</standalone-storage-node>
+	</mat-accordion>
+</div>
+<div mat-dialog-actions class="mat-dialog-actions">
+	<button type="button" mat-stroked-button color="primary" (click)="copyNode()">Copy {{targetNode.children != null ? 'directory' : 'file'}}</button>
+	<button type="button" mat-stroked-button color="primary" (click)="moveNode()">Move {{targetNode.children != null ? 'directory' : 'file'}}</button>
+	<button type="button" mat-stroked-button color="primary" (click)="linkNode()">Create shortcut</button>
+	<button type="button" mat-raised-button color="primary" [mat-dialog-close]="true">Cancel</button>
+</div>
