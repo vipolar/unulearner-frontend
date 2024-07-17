@@ -47,7 +47,9 @@ export interface StorageTask {
 export interface ExceptionOption {
 	value: string;
 	displayText: string;
-	isPersistable: boolean;
+	parameters: {
+		[key: string]: string;
+	};
 }
 
 /* Spring boot pageable response and its components */

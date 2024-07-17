@@ -62,6 +62,6 @@ Currently I am {{panelOpenState() ? 'open' : 'closed'}}
 
 <div mat-dialog-actions class="mat-dialog-actions">
     <button type="button" mat-stroked-button color="primary" [mat-dialog-close]="true" [disabled]="storageTask.taskState !== 'completed' && storageTask.taskState !== 'cancelled'">Ok</button>
-    <button type="button" mat-stroked-button color="primary" [mat-dialog-close]="true" [disabled]="storageTask.taskState !== 'exception'">Retry</button>
+    <button type="button" mat-stroked-button color="primary" (click)="cancelTaskExecution = true" [disabled]="storageTask.taskState !== 'exception'">Retry</button>
     <button type="button" mat-raised-button color="primary" (click)="cancelTaskExecution = true">Cancel</button>
 </div>
