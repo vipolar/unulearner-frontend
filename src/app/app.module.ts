@@ -25,11 +25,15 @@ function initializeKeycloak(keycloak: KeycloakService, keycloakEvents: KeycloakE
 			},
 			initOptions: {
 				onLoad: 'check-sso',
-				checkLoginIframe: true,
+				checkLoginIframe: false,
 				silentCheckSsoFallback: false,
 				silentCheckSsoRedirectUri:
 					window.location.origin + '/assets/keycloak/sso.html'
 			}
+		}).then((authenticated) => {
+			console.log(authenticated ? 'User is authenticated' : 'User is not authenticated');
+		}).catch(error => {
+			console.error('Keycloak init failed', error);
 		});
 	}
 }
