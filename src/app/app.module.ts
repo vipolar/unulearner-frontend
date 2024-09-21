@@ -1,7 +1,7 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AppRoutingModule } from '@app/app-routing.module';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from '@app/app.component';
@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 //import { EnglishModule } from '@components/rest/content/english/english.module';
 
+/* TODO: use ENV variables for stuff like this! */
 function initializeKeycloak(keycloak: KeycloakService, keycloakEvents: KeycloakEventService) {
 	return () => {
 		keycloakEvents.initializeKeycloakEventListener();
@@ -55,7 +56,6 @@ const routes: Routes = [
 		KeycloakAngularModule,
 		ReactiveFormsModule,
 		AppRoutingModule,
-		HttpClientModule,
 		BrowserModule,
 		CommonModule,
 		//EnglishModule,
@@ -68,7 +68,8 @@ const routes: Routes = [
 			useFactory: initializeKeycloak,
 			deps: [KeycloakService, KeycloakEventService],
 			multi: true
-		}
+		},
+		provideHttpClient(withInterceptorsFromDi())
 	],
 	bootstrap: [AppComponent]
 })
