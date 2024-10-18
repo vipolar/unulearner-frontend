@@ -36,8 +36,9 @@ export class ExecuteComponent implements OnInit {
 		private storageService: StorageService
 	) { }
 
+	optionsArray: Array<{ key: string; displayText: string; parameters: Array<{ key: string; value: string }> }> = [];
+
 	ngOnInit() {
-		console.log(this.data);
 		this.executeStorageTask();
 	}
 
@@ -48,24 +49,9 @@ export class ExecuteComponent implements OnInit {
 				this.storageTask = response.body as StorageTask;
 				this.storageTaskLog.push(this.storageTask.action.message);
 
-				/* WILL HAVE TO REWORK THE WHOLE THING!*/
-				/* WHAT WE ARE TRYING HERE IS TO EXTRACT ALL REQUIRED PARAMETERS
-					CREATE APPROPRIATE BUTTONS, LISTS, OR WHATEVERE FOR THEM
-					AND SHOW THEM FOR USER TO SET THE PARAMETER THAT WILL BE
-					SENT TO executeTask() TO OVERCOME THE EXCEPTION */
-				for (let i = 0; i < this.storageTask!.options!.length; i++) {
-					if (this.storageTask!.options![i].value == "keep") {
-						Object.entries(this.storageTask!.options![i].parameters).forEach(([key, value]) => {
-							console.log(`Key: ${key}, Value: ${value}`);
-						});
-					}
+				if (this.storageTask.options && this.storageTask.options != null) {
+					console.log(this.storageTask.options);
 				}
-				
-				this.storageTask.options ?.forEach(option => {
-					Object.entries(option.parameters).forEach(([key, value]) => {
-						console.log(`Key: ${key}, Value: ${value}`);
-					});
-				});
 
 				if (this.storageTask.taskState === 'executing') {
 					return this.storageService.executeTaskById(this.storageTask.taskID).pipe(delay(1000));
@@ -79,11 +65,11 @@ export class ExecuteComponent implements OnInit {
 		).subscribe({
 			next: (response: HttpResponse<any>) => {
 				this.formSubmissionResponse = response;
-				console.log(response);
+				//console.log(response);
 			},
 			error: (error: any) => {
 				this.formSubmissionResponse = error;
-				console.log(error);
+				//console.log(error);
 			}
 		});
 	}

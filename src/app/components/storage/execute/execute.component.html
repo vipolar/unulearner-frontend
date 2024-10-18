@@ -55,6 +55,12 @@ Currently I am {{panelOpenState() ? 'open' : 'closed'}}
                     [node]="storageTask.action.destinationStorageNode">
                 </standalone-storage-node>
             </mat-accordion>
+            <!--mat-accordion *ngIf="storageTask.options">
+                <standalone-storage-node  *ngFor="let option of storageTask.options"
+                    title="New"
+                    [node]="storageTask.action.newStorageNode">
+                </standalone-storage-node>
+            </mat-accordion-->
             <button type="button" mat-stroked-button color="primary" *ngFor="let option of storageTask.options">{{option.displayText}}</button>
         </mat-expansion-panel>
     </mat-accordion>        
