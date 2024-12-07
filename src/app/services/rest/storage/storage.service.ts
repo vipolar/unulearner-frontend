@@ -26,8 +26,8 @@ export class StorageService {
 	}
 
 	//TODO:!!!
-	updateFileById(targetId: string, formData: any): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/file/update/${targetId}`, formData, {
+	updateFileById(formData: any): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/file/update`, formData, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
@@ -81,8 +81,8 @@ export class StorageService {
 	}
 
 	//TODO: !!!
-	updateDirectoryById(targetId: string, formData: any): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/directory/edit/${targetId}`, formData, {
+	updateDirectoryById(formData: any): Observable<any> {
+		return this.httpClient.post(`${this.apiUrl}/update/directory`, formData, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'

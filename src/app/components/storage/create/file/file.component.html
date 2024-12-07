@@ -3,10 +3,12 @@
 	<mat-form-field class="mat-dialog-content-form-field" appearance="outline" subscriptSizing="dynamic">
 		<mat-label class="mat-dialog-content-form-field-label">File:</mat-label>
 		<input class="mat-dialog-content-form-field-input" matInput type="text" formControlName="name" required
-			[readonly]="!newFileForm.value.content" placeholder="No file selected...">
+			[readonly]="!newFile" placeholder="No file selected...">
 		<div matSuffix class="mat-dialog-content-form-field-suffix">
-			<storage-create-file-upload formControlName="content"
-				(fileNameChange)="setFileName($event)"></storage-create-file-upload>
+			<input type="file" class="file-input" [ngStyle]="{ 'display': 'none' }" #fileInput (change)="onFileSelected($event)">
+			<button type="button" mat-icon-button color="primary" class="upload-btn" (click)="fileInput.click()" aria-label="Select a file for upload">
+				<mat-icon>{{'attach_file'}}</mat-icon>
+			</button>
 		</div>
 		<mat-hint *ngIf="newFileForm.get('name')?.hasError('pattern')" class="mat-dialog-content-form-field-hint">
 			<p>*File name can only contain English alphabet letters, digits, _, -, and/or . (but not as the first

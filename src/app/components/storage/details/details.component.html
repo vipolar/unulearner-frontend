@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Edit {{targetNode.children != null ? 'directory' : 'file'}}</h1>
 <div mat-dialog-content>
-	<h4>Are you sure you want to edit <b>'{{targetNode.onDiskName}}'</b> {{targetNode.children != null ? 'and all data within it' : ''}} permanently?</h4><br>
+	<h4>Are you sure you want to edit <b>'{{targetNode.name}}'</b> {{targetNode.children != null ? 'and all data within it' : ''}} permanently?</h4><br>
 	<!--mat-tab-group class="create-form-tab-group" (selectedTabChange)="createFormTabChanged($event)">
 		<mat-tab label="Name">
 			<storage-create-file (formDataChange)="updateFileFormData($event)"></storage-create-file>

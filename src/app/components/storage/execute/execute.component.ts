@@ -24,6 +24,7 @@ import {
 export class ExecuteComponent implements OnInit {
 	public storageTask: StorageTask = this.data.body;
 	public storageTaskLog: String[] = [this.storageTask.action.message];
+	public storageTaskHeader: String | null = this.storageTask.action.actionHeader;
 
 	public formSubmissionSubscription: any = undefined;
 	public formSubmissionResponse: any = undefined;
@@ -54,7 +55,7 @@ export class ExecuteComponent implements OnInit {
 				}
 
 				if (this.storageTask.taskState === 'executing') {
-					return this.storageService.executeTaskById(this.storageTask.taskID).pipe(delay(1000));
+					return this.storageService.executeTaskById(this.storageTask.taskID).pipe(delay(Math.floor(Math.random() * (650 - 250 + 1)) + 250));
 				} else if (this.cancelTaskExecution === true) {
 					return this.storageService.cancelTaskById(this.storageTask.taskID);
 				} else {
@@ -65,11 +66,9 @@ export class ExecuteComponent implements OnInit {
 		).subscribe({
 			next: (response: HttpResponse<any>) => {
 				this.formSubmissionResponse = response;
-				//console.log(response);
 			},
 			error: (error: any) => {
 				this.formSubmissionResponse = error;
-				//console.log(error);
 			}
 		});
 	}

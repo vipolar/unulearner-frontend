@@ -34,7 +34,7 @@ export class DetailsComponent {
 
 	public editNodeForm = new FormGroup({
 		description: new FormControl(this.data.targetNode.description, Validators.required),
-		name: new FormControl(this.data.targetNode.onDiskName, Validators.required)
+		name: new FormControl(this.data.targetNode.name, Validators.required)
 	});
 
 	public editNode() {
@@ -45,8 +45,9 @@ export class DetailsComponent {
 			formData.append('description', formValues.description);
 			formData.append('name', formValues.name);
 		}
+		//TODO: update the node itself and just send it!
 
-		const storageServiceObservable = this.data.targetNode.children != null ? this.storageService.updateDirectoryById(this.data.targetNode.id, formData) : this.storageService.updateFileById(this.data.targetNode.id, formData);
+		const storageServiceObservable = this.data.targetNode.children != null ? this.storageService.updateDirectoryById(formData) : this.storageService.updateFileById(formData);
 		this.formSubmissionSubscription = storageServiceObservable
 			.subscribe({
 				next: (response: HttpResponse<any>) => {

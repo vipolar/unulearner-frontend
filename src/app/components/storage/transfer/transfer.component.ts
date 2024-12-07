@@ -37,6 +37,10 @@ export class TransferComponent {
 	public async copyNode() {
 		let storageServiceObservable: Observable<any>;
 
+		if (this.targetNode.id == null || this.destinationNode.id == null) {
+			return;
+		}
+
 		if (this.targetNode.children != null) {
 			storageServiceObservable = this.storageService.copyDirectoryByIdToById(this.targetNode.id, this.destinationNode.id);
 		} else {
@@ -49,6 +53,10 @@ export class TransferComponent {
 	public async moveNode() {
 		let storageServiceObservable: Observable<any>;
 
+		if (this.targetNode.id == null || this.destinationNode.id == null) {
+			return;
+		}
+
 		if (this.targetNode.children != null) {
 			storageServiceObservable = this.storageService.moveDirectoryByIdToById(this.targetNode.id, this.destinationNode.id);
 		} else {
@@ -60,6 +68,10 @@ export class TransferComponent {
 
 	public async linkNode() {
 		let storageServiceObservable: Observable<any>;
+
+		if (this.targetNode.id == null || this.destinationNode.id == null) {
+			return;
+		}
 
 		storageServiceObservable = this.storageService.createShortcutByIdToById(this.targetNode.id, this.destinationNode.id);
 

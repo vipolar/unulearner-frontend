@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Remove {{targetNode.children != null ? 'directory' : 'file'}}</h1>
 <div mat-dialog-content>
-	<h4>Are you sure you want to remove <b>'{{targetNode.onDiskName}}'</b> {{targetNode.children != null ? 'and all data within it' : ''}} permanently?</h4><br>
+	<h4>Are you sure you want to remove <b>'{{targetNode.name}}'</b> {{targetNode.children != null ? 'and all data within it' : ''}} permanently?</h4><br>
 	<mat-accordion>
 		<standalone-storage-node cdkFocusInitial
 			title="Target"

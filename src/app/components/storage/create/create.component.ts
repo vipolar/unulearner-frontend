@@ -2,7 +2,7 @@ import { Component, Inject, EventEmitter, Output, ViewChild, AfterViewInit, Chan
 import { StorageService } from '@services/rest/storage/storage.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { MatTabGroup } from '@angular/material/tabs';
-import { catchError, filter, map, retry, tap } from 'rxjs';
+import { catchError, filter, map, tap } from 'rxjs';
 import { StorageNode } from '@app/app.types';
 import { FormGroup } from '@angular/forms';
 
@@ -33,6 +33,8 @@ export class CreateComponent implements AfterViewInit {
 
 	public newDirectoryForm: FormGroup | null = null;
 	public newFileForm: FormGroup | null = null;
+	public selectedFile: File | null = null;
+
 	public selectedTab: string = "selected";
 
 	constructor(
@@ -77,6 +79,10 @@ export class CreateComponent implements AfterViewInit {
 		this.newDirectoryForm = data;
 	}
 
+	public updateSelectedFile(file: File): void {
+		this.selectedFile = file;
+	}
+
 	public updateFileFormData(data: any): void {
 		this.newFileForm = data;
 	}
@@ -90,15 +96,20 @@ export class CreateComponent implements AfterViewInit {
 			return;
 		}
 
-		const formData = new FormData();
-		const formValues = this.newFileForm.value;
-
-		if (formValues.name && formValues.content && formValues.description) {
-			formData.append('content', formValues.content, formValues.name);
-			formData.append('description', formValues.description);
+		if (this.destinationNode.id == null) {
+			return;
 		}
 
-		const storageServiceObservable = this.storageService.addFileToById(formData, this.destinationNode.id)
+		if (this.selectedFile == null) {
+			return;
+		}
+
+		const formData = new FormData();
+		const newNode = this.newFileForm.getRawValue() as StorageNode;
+		formData.append('node', new Blob([JSON.stringify(newNode)], { type: "application/json" }));
+		formData.append('content', this.selectedFile, this.selectedFile.name);
+
+		const storageServiceObservable = this.storageService.addFileToById(formData, this.destinationNode.id);
 		this.formSubmissionSubscription = storageServiceObservable
 			.pipe(
 				tap(event => {
@@ -106,8 +117,8 @@ export class CreateComponent implements AfterViewInit {
 						this.fileUploadProgressIndicator = Math.round(100 * (event.loaded / event.total));
 					}
 				}),
-				filter(event => event instanceof HttpResponse), //filter(event => event.type === HttpEventType.Response),
-				map((event: any) => event.body), //map(event => event as HttpResponse<any>),
+				filter(event => event instanceof HttpResponse),
+				map((event: any) => event as HttpResponse<any>),
 				catchError(error => {
 					throw error;
 				})
@@ -147,16 +158,16 @@ export class CreateComponent implements AfterViewInit {
 			return;
 		}
 
-		const formData = new FormData();
-		const formValues = this.newDirectoryForm.value;
-
-		if (formValues.name && formValues.description) {
-			formData.append('description', formValues.description);
-			formData.append('directory', formValues.name);
+		if (this.destinationNode.id == null) {
+			return;
 		}
 
+		const formData = new FormData();
 		this.directoryCreationProgressIndicator = true;
-		const storageServiceObservable = this.storageService.addDirectoryToById(formData, this.destinationNode.id)
+		const newNode = this.newDirectoryForm.getRawValue() as StorageNode;
+		formData.append('node', JSON.stringify(newNode));
+
+		const storageServiceObservable = this.storageService.addDirectoryToById(newNode, this.destinationNode.id);
 		this.formSubmissionSubscription = storageServiceObservable
 			.subscribe({
 				next: (response: HttpResponse<any>) => {

@@ -23,17 +23,17 @@ export class CreateComponent implements OnInit {
 		id: new FormControl(null, {
 			validators: [Validators.required],
 			nonNullable: false,
-			updateOn: 'blur'
+			updateOn: 'change'
 		}),
 		word: new FormControl("", {
 			validators: [Validators.required],
 			nonNullable: true,
-			updateOn: 'blur'
+			updateOn: 'change'
 		}),
 		url: new FormControl("", {
 			validators: [Validators.required, Validators.pattern(urlRegEx)],
 			nonNullable: true,
-			updateOn: 'blur'
+			updateOn: 'change'
 		})
 	});
 

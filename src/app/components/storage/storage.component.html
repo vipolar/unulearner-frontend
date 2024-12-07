@@ -3,15 +3,15 @@
 		<mat-tree id="storage-tree" class="storage-tree" [dataSource]="dataSource" [treeControl]="treeControl">
 			<!-- This is the tree node template for non-expandable nodes | cdkDragPreview cdkDragHandle cdkDragBoundary="#storage-tree"-->
 			<mat-tree-node class="storage-tree-node" *matTreeNodeDef="let node" cdkDrag (cdkDragStarted)="onNodeDrag($event, node)" (nodeDropped)="onNodeDrop($event, node)">
-				<button class="storage-tree-node-button" mat-button [ngClass]="{'selected': targetNode?.id == node.id}" matTooltip="{{node.onDiskName}}" color="warn" [attr.aria-label]="'Select {{node.onDiskName}}'"
+				<button class="storage-tree-node-button" mat-button [ngClass]="{'selected': targetNode?.id == node.id}" matTooltip="{{node.name}}" color="warn" [attr.aria-label]="'Select {{node.name}}'"
 					(mousedown)="onNodeTouch($event, node)" (touchstart)="onNodeTouch($event, node)" (mouseup)="onNodeRelease($event, node)" (touchend)="onNodeRelease($event, node)">
 					<mat-icon class="storage-tree-node-button-icon">
 						{{'check'}}
 					</mat-icon>
-					<span class="storage-tree-node-button-label">{{node.onDiskName}}</span>
+					<span class="storage-tree-node-button-label">{{node.name}}</span>
 				</button>
 				<span class="storage-tree-node-options" [ngClass]="{'hidden': targetNode?.id != node.id}">
-					<button class="storage-tree-node-options-button" mat-button color="warn" (click)="$event.stopPropagation()" matTooltip="{{node.onDiskName}} options"
+					<button class="storage-tree-node-options-button" mat-button color="warn" (click)="$event.stopPropagation()" matTooltip="{{node.name}} options"
 						[matMenuTriggerFor]="storageNodeMenu" [matMenuTriggerData]="{targetNode: node}" aria-label="Options">
 						<mat-icon class="storage-tree-node-options-button-icon">{{'more_vert'}}</mat-icon>
 					</button>
@@ -19,15 +19,15 @@
 			</mat-tree-node>
 			<!-- This is the tree node template for expandable nodes -->
 			<mat-nested-tree-node class="storage-tree-node" *matTreeNodeDef="let node; when: hasChild" cdkDrag (cdkDragStarted)="onNodeDrag($event, node)" (nodeDropped)="onNodeDrop($event, node)">
-				<button class="storage-tree-node-button" mat-button [ngClass]="{'selected': targetNode?.id == node.id}" matTooltip="{{node.onDiskName}}" color="warn" [attr.aria-label]="'Select {{node.onDiskName}}'"
+				<button class="storage-tree-node-button" mat-button [ngClass]="{'selected': targetNode?.id == node.id}" matTooltip="{{node.name}}" color="warn" [attr.aria-label]="'Select {{node.name}}'"
 					(mousedown)="onNodeTouch($event, node)" (touchstart)="onNodeTouch($event, node)" (mouseup)="onNodeRelease($event, node)" (touchend)="onNodeRelease($event, node)">
 					<mat-icon class="storage-tree-node-button-icon">
 						{{treeControl.isExpanded(node) ? 'folder_open' : 'folder'}}
 					</mat-icon>
-					<span class="storage-tree-node-button-label">{{node.onDiskName}}</span>
+					<span class="storage-tree-node-button-label">{{node.name}}</span>
 				</button>
 				<span class="storage-tree-node-options" [ngClass]="{'hidden': targetNode?.id != node.id}">
-					<button class="storage-tree-node-options-button" mat-button color="warn" (click)="$event.stopPropagation()" matTooltip="{{node.onDiskName}} options"
+					<button class="storage-tree-node-options-button" mat-button color="warn" (click)="$event.stopPropagation()" matTooltip="{{node.name}} options"
 						[matMenuTriggerFor]="storageNodeMenu" [matMenuTriggerData]="{targetNode: node}" aria-label="Options">
 						<mat-icon class="storage-tree-node-options-button-icon">{{'more_vert'}}</mat-icon>
 					</button>

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ControlsOf, StorageNode } from '@app/app.types';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -9,20 +10,86 @@ import { Subscription } from 'rxjs';
 })
 export class CreateFileComponent implements OnDestroy {
 	@Output() formDataChange = new EventEmitter<FormGroup>();
+	@Output() fileSelected = new EventEmitter<File>();
 
 	private formSubscription: Subscription;
+	public newFile: File | null = null;
 	public newFileForm: FormGroup;
 
 	constructor() {
-		this.newFileForm = new FormGroup({
-			name: new FormControl('', [Validators.required]),
-			content: new FormControl(null, Validators.required),
-			description: new FormControl(null, Validators.required),
+		this.newFileForm = new FormGroup<ControlsOf<StorageNode>>({
+			id: new FormControl(null, {
+				//validators: [Validators.required],
+				nonNullable: false,
+				updateOn: 'change'
+			}),
+			url: new FormControl("asd5", {
+				validators: [Validators.required],
+				nonNullable: true,
+				updateOn: 'change'
+			}),
+			name: new FormControl("asd6", {
+				validators: [Validators.required],
+				nonNullable: true,
+				updateOn: 'change'
+			}),
+			user: new FormControl("123e4567-e89b-42d3-a456-556642440000", {
+				validators: [Validators.required],
+				nonNullable: true,
+				updateOn: 'change'
+			}),
+			group: new FormControl("123e4567-e89b-42d3-a456-556642440000", {
+				validators: [Validators.required],
+				nonNullable: true,
+				updateOn: 'change'
+			}),
+			created: new FormControl(null, {
+				//validators: [Validators.required],
+				nonNullable: false,
+				updateOn: 'change'
+			}),
+			updated: new FormControl(null, {
+				//validators: [Validators.required],
+				nonNullable: false,
+				updateOn: 'change'
+			}),
+			description: new FormControl("asd7", {
+				validators: [Validators.required],
+				nonNullable: true,
+				updateOn: 'change'
+			}),
+			permissions: new FormControl(777, {
+				validators: [Validators.required],
+				nonNullable: true,
+				updateOn: 'change'
+			}),
+			isConfirmed: new FormControl(false, {
+				validators: [Validators.required],
+				nonNullable: true,
+				updateOn: 'change'
+			}),
+			isAccessible: new FormControl(false, {
+				validators: [Validators.required],
+				nonNullable: true,
+				updateOn: 'change'
+			}),
+			children: new FormControl(null, {
+				//validators: [Validators.required],
+				nonNullable: false,
+				updateOn: 'change'
+			})
 		});
 
 		// Subscribe to form value changes
 		this.formSubscription = this.newFileForm.valueChanges.subscribe(value => {
 			this.formDataChange.emit(this.newFileForm);
+
+			Object.keys(this.newFileForm.controls).forEach(key => {
+				const controlErrors = this.newFileForm.get(key)?.errors;
+				if (controlErrors) {
+					console.log(`Errors in ${key}:`, controlErrors);
+				}
+			});
 		});
 	}
 
@@ -33,8 +100,15 @@ export class CreateFileComponent implements OnDestroy {
 		}
 	}
 
-	setFileName(name: string) {
-		this.newFileForm.get('name')?.setValue(name);
+	onFileSelected(event: Event): void {
+		const input = event.target as HTMLInputElement;
+		if (input.files && input.files.length > 0) {
+			this.newFile = input.files[0];
+			
+			// Optionally, set the file name to the form control
+			this.newFileForm.get('name')?.setValue(this.newFile.name);
+			this.fileSelected.emit(this.newFile);
+		}
 	}
 
 	addFileDull() {

@@ -25,10 +25,14 @@ export class StorageNodeComponent {
 	) { }
 
 	ngOnInit() {
-		const created = this.dateService.dateTimeLocale('en-US', this.node.created);
-		this.node.created = created != null ? created : 'N/A';
+		if (this.node.created != null) {
+			const created = this.dateService.dateTimeLocale('en-US', this.node.created);
+			this.node.created = created != null ? created : 'N/A';
+		}
 
-		const updated = this.dateService.dateTimeLocale('en-US', this.node.updated);
-		this.node.updated = updated != null ? updated : 'N/A';
+		if (this.node.updated != null) {
+			const updated = this.dateService.dateTimeLocale('en-US', this.node.updated);
+			this.node.updated = updated != null ? updated : 'N/A';
+		}
 	}
 }

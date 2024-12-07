@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Transfer {{targetNode.children != null ? 'directory' : 'file'}}</h1>
 <div mat-dialog-content>
-	<h4>Would you like to transfer <b>'{{targetNode.onDiskName}}'</b> {{targetNode.children != null ? 'and all data within it' : ''}} to another location permanently or create a shortcut to it?</h4><br>
+	<h4>Would you like to transfer <b>'{{targetNode.name}}'</b> {{targetNode.children != null ? 'and all data within it' : ''}} to another location permanently or create a shortcut to it?</h4><br>
 	<mat-accordion>
 		<standalone-storage-node cdkFocusInitial
 			title="Target"

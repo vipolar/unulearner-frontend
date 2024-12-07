@@ -30,7 +30,6 @@ import { RemoveComponent } from './remove/remove.component';
 import { CreateComponent } from './create/create.component';
 
 import { CreateFileComponent } from './create/file/file.component';
-import { UploadComponent } from './create/file/upload/upload.component';
 import { CreateDirectoryComponent } from './create/directory/directory.component';
 
 @NgModule({
@@ -44,7 +43,6 @@ import { CreateDirectoryComponent } from './create/directory/directory.component
 		CloseComponent,
 		CreateDirectoryComponent,
 		CreateFileComponent,
-		UploadComponent,
 	],
 	imports: [
 		FormsModule,

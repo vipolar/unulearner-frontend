@@ -1,9 +1,9 @@
 <mat-expansion-panel [expanded]="expand">
     <mat-expansion-panel-header>
         <mat-panel-title>{{ title }}</mat-panel-title>
-        <mat-panel-description>{{ node.onDiskName }}</mat-panel-description>
+        <mat-panel-description>{{ node.name }}</mat-panel-description>
     </mat-expansion-panel-header>
-    <p>URL: {{ node.onDiskURL }}</p>
+    <p>URL: {{ node.url }}</p>
     <p>Directory: {{ node.children != null ? "true" : "false" }}</p>
     <p>Date created: {{ node.created }}</p>
     <p>Date updated: {{ node.updated }}</p>

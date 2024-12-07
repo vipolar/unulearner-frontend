@@ -15,12 +15,16 @@ export interface Dictionary {
 
 /* Storage interfaces */
 export interface StorageNode {
-	id: string;
-	created: string;
-	updated: string;
-	onDiskURL: string;
-	onDiskName: string;
+	id: string | null;
+	url: string;
+	name: string;
+	user: string;
+	group: string;
+	created: string | null;
+	updated: string | null;
 	description: string;
+	permissions: number;
+	isConfirmed: boolean;
 	isAccessible: boolean;
 	_lastSelected?: boolean;
 	children: StorageNode[] | null;
