@@ -5,7 +5,7 @@
 	<h4>Would you like to upload a file to the <b>'{{destinationNode.name}}'</b> directory or create a new sub-directory within it?</h4><br>
 	<mat-tab-group class="create-form-tab-group" (selectedTabChange)="createFormTabChanged($event)" cdkFocusInitial>
 		<mat-tab label="File">
-			<storage-create-file (fileSelected)="updateSelectedFile($event)" (formDataChange)="updateFileFormData($event)"></storage-create-file>
+			<storage-create-file (formDataChange)="updateFileFormData($event)"></storage-create-file>
 		</mat-tab>
 		<mat-tab label="Directory">
 			<storage-create-directory (formDataChange)="updateDirectoryFormData($event)"></storage-create-directory>
@@ -20,7 +20,7 @@
 	</mat-accordion>
 </div>
 <div mat-dialog-actions class="mat-dialog-actions">
-	<button type="button" mat-stroked-button color="primary" *ngIf="selectedTab === 'File'" (click)="uploadFile()" [disabled]="!newFileForm || !newFileForm.valid || !selectedFile" >Upload file</button>
+	<button type="button" mat-stroked-button color="primary" *ngIf="selectedTab === 'File'" (click)="uploadFile()" [disabled]="!newFileForm || !newFileForm.valid" >Upload file</button>
 	<button type="button" mat-stroked-button color="primary" *ngIf="selectedTab === 'Directory'" (click)="createDirectory()" [disabled]="!newDirectoryForm || !newDirectoryForm.valid" >Create directory</button>
 	<button type="button" mat-raised-button color="primary" [mat-dialog-close]="false">Cancel</button>
 </div>

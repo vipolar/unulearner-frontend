@@ -33,7 +33,6 @@ export class CreateComponent implements AfterViewInit {
 
 	public newDirectoryForm: FormGroup | null = null;
 	public newFileForm: FormGroup | null = null;
-	public selectedFile: File | null = null;
 
 	public selectedTab: string = "selected";
 
@@ -79,10 +78,6 @@ export class CreateComponent implements AfterViewInit {
 		this.newDirectoryForm = data;
 	}
 
-	public updateSelectedFile(file: File): void {
-		this.selectedFile = file;
-	}
-
 	public updateFileFormData(data: any): void {
 		this.newFileForm = data;
 	}
@@ -100,16 +95,8 @@ export class CreateComponent implements AfterViewInit {
 			return;
 		}
 
-		if (this.selectedFile == null) {
-			return;
-		}
-
-		const formData = new FormData();
-		const newNode = this.newFileForm.getRawValue() as StorageNode;
-		formData.append('node', new Blob([JSON.stringify(newNode)], { type: "application/json" }));
-		formData.append('content', this.selectedFile, this.selectedFile.name);
-
-		const storageServiceObservable = this.storageService.addFileToById(formData, this.destinationNode.id);
+		const formValues = this.newFileForm.value;
+		const storageServiceObservable = this.storageService.scp(formValues.file, this.destinationNode.id, formValues.name != formValues.file.name ? formValues.name : null);
 		this.formSubmissionSubscription = storageServiceObservable
 			.pipe(
 				tap(event => {
@@ -162,12 +149,9 @@ export class CreateComponent implements AfterViewInit {
 			return;
 		}
 
-		const formData = new FormData();
-		this.directoryCreationProgressIndicator = true;
-		const newNode = this.newDirectoryForm.getRawValue() as StorageNode;
-		formData.append('node', JSON.stringify(newNode));
-
-		const storageServiceObservable = this.storageService.addDirectoryToById(newNode, this.destinationNode.id);
+		const formValues = this.newDirectoryForm.value;
+		this.directoryCreationProgressIndicator = formValues.name != null;
+		const storageServiceObservable = this.storageService.mkdir(this.destinationNode.id, formValues.name);
 		this.formSubmissionSubscription = storageServiceObservable
 			.subscribe({
 				next: (response: HttpResponse<any>) => {

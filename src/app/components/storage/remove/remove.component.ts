@@ -34,13 +34,7 @@ export class RemoveComponent {
 	) { }
 
 	public removeNode() {
-		let storageServiceObservable: Observable<any>;
-
-		if (this.data.targetNode.children != null) {
-			storageServiceObservable = this.storageService.deleteDirectoryById(this.data.targetNode.id);
-		} else {
-			storageServiceObservable = this.storageService.deleteFileById(this.data.targetNode.id);
-		}
+		const storageServiceObservable = this.storageService.rm(this.data.targetNode.id);
 
 		this.formSubmissionSubscription = storageServiceObservable.subscribe({
 			next: (response: HttpResponse<any>) => {

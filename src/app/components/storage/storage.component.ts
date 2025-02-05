@@ -313,7 +313,7 @@ export class StorageComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.storageService.getRootDirectory()
+		this.storageService.ls(null)
 			.subscribe(response => {
 				this.dataSource.data = [response];
 			});

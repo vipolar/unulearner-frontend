@@ -1,4 +1,4 @@
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -10,160 +10,144 @@ export class StorageService {
 	private apiUrl = 'https://unulearner.com/backend/storage';
 	constructor(private httpClient: HttpClient) { };
 
-	//**********************************************************//
-    //*                                                        *//
-    //*   From here on, it be all about THEM single files!     *//
-    //*                                                        *//
-    //**********************************************************//
-
-	//TODO:!!!
-	addFileToById(formData: any, destinationId: string): Observable<HttpEvent<any>> {
-		return this.httpClient.post<HttpEvent<any>>(`${this.apiUrl}/upload/file/to/${destinationId}`, formData, {
-			reportProgress: true,
-			responseType: 'json',
-			observe: 'events'
-		});
-	}
-
-	//TODO:!!!
-	updateFileById(formData: any): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/file/update`, formData, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-	copyFileByIdToById(targetId: string, destinationId: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/copy/file/${targetId}/to/${destinationId}`, null, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-	moveFileByIdToById(targetId: string, destinationId: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/move/file/${targetId}/to/${destinationId}`, null, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-	downloadFileById(targetId: string): Observable<HttpEvent<any>> {
-		return this.httpClient.get((`${this.apiUrl}/download/file/${targetId}`), {
-			reportProgress: true,
-			responseType: 'json',
-			observe: 'events'
-		});
-	}
-
-	deleteFileById(targetId: string): Observable<any> {
-		return this.httpClient.delete(`${this.apiUrl}/delete/file/${targetId}`, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-	//*********************************************************//
-    //*                                                       *//
-    //*   From here on, it be all about THEM directories!     *//
-    //*                                                       *//
-    //*********************************************************//
-	//TODO: !!!
-	addDirectoryToById(formData: any, destinationId: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/create/directory/in/${destinationId}`, formData, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-	//TODO: !!!
-	updateDirectoryById(formData: any): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/update/directory`, formData, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-	copyDirectoryByIdToById(targetId: string, destinationId: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/copy/directory/${targetId}/to/${destinationId}`, null, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-	moveDirectoryByIdToById(targetId: string, destinationId: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/move/directory/${targetId}/to/${destinationId}`, null, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-	downloadDirectoryById(targetId: string): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/download/directory/${targetId}`, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-	deleteDirectoryById(targetId: string): Observable<any> {
-		return this.httpClient.delete(`${this.apiUrl}/delete/directory/${targetId}`, {
-			reportProgress: false,
-			responseType: 'json',
-			observe: 'response'
-		});
-	}
-
-    //***************************************************//
-    //*                                                 *//
-    //*   From here on, it be all about THEM tasks!     *//
-    //*                                                 *//
-    //***************************************************//
-
 	//TODO: arguments
-	executeTaskById(targetId: string): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/execute/task/${targetId}`, {
+	exec(taskUUID: string): Observable<any> {
+		let requestUrl: string = `${this.apiUrl}/exec/${taskUUID}`;
+
+		return this.httpClient.get(requestUrl, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
 		});
 	}
 
-	cancelTaskById(targetId: string): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/cancel/task/${targetId}`, {
+	ls(targetUUID: string | null): Observable<any> {
+		let requestUrl: string = `${this.apiUrl}/ls`;
+		if (targetUUID != null && targetUUID.trim().length !== 0) {
+			requestUrl += `/${targetUUID}`;
+		}
+
+		return this.httpClient.get(requestUrl);
+	}
+
+	scp(file: File, destinationUUID: string, newFileName: string | null): Observable<HttpEvent<any>> {
+		let requestUrl: string = `${this.apiUrl}/scp/${destinationUUID}`;
+		if (newFileName != null && newFileName.trim().length !== 0) {
+			requestUrl += `/${encodeURIComponent(newFileName)}`;
+		}
+
+		const formData = new FormData();
+		formData.append('file', file, file.name);
+		return this.httpClient.post<HttpEvent<any>>(requestUrl, formData, {
+			reportProgress: true,
+			responseType: 'json',
+			observe: 'events',
+		});
+	}
+
+	mkdir(destinationUUID: string, newDirectoryName: string): Observable<any> {
+		let requestUrl: string = `${this.apiUrl}/mkdir/${destinationUUID}/${encodeURIComponent(newDirectoryName)}`;
+
+		return this.httpClient.post(requestUrl, null, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'
 		});
 	}
 
+	cp(targetUUID: string, destinationUUID: string, newNodeName: string | null): Observable<any> {
+		let requestUrl: string = `${this.apiUrl}/cp/${targetUUID}/${destinationUUID}`;
+		if (newNodeName != null && newNodeName.trim().length !== 0) {
+			requestUrl += `/${encodeURIComponent(newNodeName)}`;
+		}
 
-    //***************************************************//
-    //*                                                 *//
-    //*   From here on, it be all about THEM rests!     *//
-    //*                                                 *//
-    //***************************************************//
-
-	//TODO: !!!
-	getRootDirectory(): Observable<any> {
-		return this.httpClient.get(`${this.apiUrl}/root/download`);
+		return this.httpClient.post(requestUrl, null, {
+			reportProgress: false,
+			responseType: 'json',
+			observe: 'response'
+		});
 	}
 
-	//TODO: !!!
-	getFileLinkById(targetId: string): string {
-		return `${this.apiUrl}/file/get/${targetId}`;
+	mv(targetUUID: string, destinationUUID: string, newNodeName: string | null): Observable<any> {
+		let requestUrl: string = `${this.apiUrl}/mv/${targetUUID}/${destinationUUID}`;
+		if (newNodeName != null && newNodeName.trim().length !== 0) {
+			requestUrl += `/${encodeURIComponent(newNodeName)}`;
+		}
+
+		return this.httpClient.post(requestUrl, null, {
+			reportProgress: false,
+			responseType: 'json',
+			observe: 'response'
+		});
 	}
 
-	//TODO: !!!
-	createShortcutByIdToById(targetId: string, destinationId: string): Observable<any> {
-		return this.httpClient.post(`${this.apiUrl}/link/file/${targetId}/to/${destinationId}`, null, {
+	//TODO: implement in backend!!!
+	ln(targetUUID: string, destinationUUID: string, newNodeName: string | null): Observable<any> {
+		let requestUrl: string = `${this.apiUrl}/ln/${targetUUID}/${destinationUUID}`;
+		if (newNodeName != null && newNodeName.trim().length !== 0) {
+			requestUrl += `/${encodeURIComponent(newNodeName)}`;
+		}
+
+		return this.httpClient.post(requestUrl, null, {
+			reportProgress: false,
+			responseType: 'json',
+			observe: 'response'
+		});
+	}
+
+	//TODO: take params out of here
+	chmod(targetUUID: string, options: string, recursive: boolean): Observable<any> {
+		const params = new HttpParams().set('options', options).set('recursive', recursive);
+		let requestUrl: string = `${this.apiUrl}/chmod/${targetUUID}`;
+		
+		return this.httpClient.post<HttpEvent<any>>(requestUrl, null, {
+			reportProgress: true,
+			responseType: 'json',
+			observe: 'events',
+			params: params
+		});
+	}
+
+	//TODO: take params out of here
+	chown(targetUUID: string, user: string | null, group: string | null, recursive: boolean): Observable<any> {
+		const owners: string = `${user ?? ''}${group != null ? `:${group}` : ''}`;
+		const params = new HttpParams().set('owners', owners).set('recursive', recursive);
+		let requestUrl: string = `${this.apiUrl}/chown/${targetUUID}`;
+
+		return this.httpClient.post<HttpEvent<any>>(requestUrl, null, {
+			reportProgress: true,
+			responseType: 'json',
+			observe: 'events',
+			params: params
+		});
+	}
+
+	wget(targetUUID: string): Observable<HttpEvent<any>> {
+		let requestUrl: string = `${this.apiUrl}/wget/${targetUUID}`;
+
+		return this.httpClient.get((requestUrl), {
+			reportProgress: true,
+			responseType: 'json',
+			observe: 'events'
+		});
+	}
+
+	//TODO: add params somewhere?
+	doc(targetUUID: string): Observable<HttpEvent<any>> {
+		let requestUrl: string = `${this.apiUrl}/doc/${targetUUID}`;
+
+		return this.httpClient.get((requestUrl), {
+			reportProgress: true,
+			responseType: 'json',
+			observe: 'events'
+		});
+	}
+
+	//TODO: take params out of here (add them first?)
+	rm(targetUUID: string): Observable<any> {
+		let requestUrl: string = `${this.apiUrl}/rm/${targetUUID}`;
+
+		return this.httpClient.delete(requestUrl, {
 			reportProgress: false,
 			responseType: 'json',
 			observe: 'response'

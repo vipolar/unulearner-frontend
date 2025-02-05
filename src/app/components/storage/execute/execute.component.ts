@@ -44,7 +44,7 @@ export class ExecuteComponent implements OnInit {
 	}
 
 	private executeStorageTask() {
-		this.storageService.executeTaskById(this.storageTask.taskID).pipe(
+		this.storageService.exec(this.storageTask.task).pipe(
 			expand((response: HttpResponse<any>) => {
 				this.formSubmissionResponse = response;
 				this.storageTask = response.body as StorageTask;
@@ -54,15 +54,15 @@ export class ExecuteComponent implements OnInit {
 					console.log(this.storageTask.options);
 				}
 
-				if (this.storageTask.taskState === 'executing') {
-					return this.storageService.executeTaskById(this.storageTask.taskID).pipe(delay(Math.floor(Math.random() * (650 - 250 + 1)) + 250));
+				if (this.storageTask.state === 'executing') {
+					return this.storageService.exec(this.storageTask.task).pipe(delay(Math.floor(Math.random() * (650 - 250 + 1)) + 250));
 				} else if (this.cancelTaskExecution === true) {
-					return this.storageService.cancelTaskById(this.storageTask.taskID);
+					return this.storageService.exec(this.storageTask.task);
 				} else {
 					return EMPTY;
 				}
 			}),
-			takeWhile((response: HttpResponse<any>) => this.storageTask.taskState === 'executing', true)
+			takeWhile((response: HttpResponse<any>) => this.storageTask.state === 'executing', true)
 		).subscribe({
 			next: (response: HttpResponse<any>) => {
 				this.formSubmissionResponse = response;

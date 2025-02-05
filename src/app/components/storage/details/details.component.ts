@@ -38,6 +38,9 @@ export class DetailsComponent {
 	});
 
 	public editNode() {
+		return;
+
+		/*
 		const formData = new FormData();
 		const formValues = this.editNodeForm.value;
 
@@ -75,5 +78,6 @@ export class DetailsComponent {
 					this.dialogRef.close('failure');
 				}
 			});
+		*/
 	}
 }

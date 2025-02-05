@@ -1,9 +1,9 @@
 <form id="fileForm" class="mat-dialog-content-form" enctype="multipart/form-data" [formGroup]="newFileForm"
 	(ngSubmit)="addFileDull()">
 	<mat-form-field class="mat-dialog-content-form-field" appearance="outline" subscriptSizing="dynamic">
-		<mat-label class="mat-dialog-content-form-field-label">File:</mat-label>
+		<mat-label class="mat-dialog-content-form-field-label">File: {{newFileForm.value.name?.length == 0 ? newFileForm.value.file?.name : ""}}</mat-label>
 		<input class="mat-dialog-content-form-field-input" matInput type="text" formControlName="name" required
-			[readonly]="!newFile" placeholder="No file selected...">
+			[readonly]="!newFileForm.value.file" [placeholder]="newFileForm.value.file ? 'Enter file name...' : 'No file selected...'">
 		<div matSuffix class="mat-dialog-content-form-field-suffix">
 			<input type="file" class="file-input" [ngStyle]="{ 'display': 'none' }" #fileInput (change)="onFileSelected($event)">
 			<button type="button" mat-icon-button color="primary" class="upload-btn" (click)="fileInput.click()" aria-label="Select a file for upload">
@@ -14,10 +14,5 @@
 			<p>*File name can only contain English alphabet letters, digits, _, -, and/or . (but not as the first
 				character.)</p>
 		</mat-hint>
-	</mat-form-field>
-	<mat-form-field class="mat-dialog-content-form-field" appearance="outline" subscriptSizing="dynamic">
-		<mat-label class="mat-dialog-content-form-field-label">Description:</mat-label>
-		<textarea class="mat-dialog-content-form-field-input" matInput type="text" formControlName="description"
-			required placeholder="A short description of the new file and its purpose..."></textarea>
 	</mat-form-field>
 </form>

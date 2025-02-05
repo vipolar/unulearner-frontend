@@ -31,20 +31,20 @@ export interface StorageNode {
 }
 
 export interface StorageTask {
-	taskID: string;
-	taskState: string;
+	task: string;
+	state: string;
 	options: ExceptionOption[] | null;
 	action: {
 		message: string;
-		timeLeft: number;
+		validBefore: number;
 		attemptCounter: number;
 		actionHeader: string | null;
 		exceptionType: string | null;
 		exceptionMessage: string | null;
-		newStorageNode?: StorageNode | null;
-		targetStorageNode?: StorageNode | null;
-		conflictStorageNode?: StorageNode | null;
-		destinationStorageNode?: StorageNode | null;
+		newEntry?: StorageNode | null;
+		targetEntry?: StorageNode | null;
+		conflictEntry?: StorageNode | null;
+		destinationEntry?: StorageNode | null;
 	};
 }
 

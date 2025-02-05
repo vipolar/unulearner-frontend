@@ -35,46 +35,29 @@ export class TransferComponent {
 	) { }
 
 	public async copyNode() {
-		let storageServiceObservable: Observable<any>;
-
 		if (this.targetNode.id == null || this.destinationNode.id == null) {
 			return;
 		}
 
-		if (this.targetNode.children != null) {
-			storageServiceObservable = this.storageService.copyDirectoryByIdToById(this.targetNode.id, this.destinationNode.id);
-		} else {
-			storageServiceObservable = this.storageService.copyFileByIdToById(this.targetNode.id, this.destinationNode.id);
-		}
-
+		const storageServiceObservable = this.storageService.cp(this.targetNode.id, this.destinationNode.id, null);
 		this.transferNode(storageServiceObservable);
 	}
 
 	public async moveNode() {
-		let storageServiceObservable: Observable<any>;
-
 		if (this.targetNode.id == null || this.destinationNode.id == null) {
 			return;
 		}
 
-		if (this.targetNode.children != null) {
-			storageServiceObservable = this.storageService.moveDirectoryByIdToById(this.targetNode.id, this.destinationNode.id);
-		} else {
-			storageServiceObservable = this.storageService.moveFileByIdToById(this.targetNode.id, this.destinationNode.id);
-		}
-
+		const storageServiceObservable = this.storageService.mv(this.targetNode.id, this.destinationNode.id, null);
 		this.transferNode(storageServiceObservable);
 	}
 
 	public async linkNode() {
-		let storageServiceObservable: Observable<any>;
-
 		if (this.targetNode.id == null || this.destinationNode.id == null) {
 			return;
 		}
 
-		storageServiceObservable = this.storageService.createShortcutByIdToById(this.targetNode.id, this.destinationNode.id);
-
+		const storageServiceObservable = this.storageService.ln(this.targetNode.id, this.destinationNode.id, null);
 		this.transferNode(storageServiceObservable);
 	}
 
